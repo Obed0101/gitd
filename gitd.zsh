@@ -1,5 +1,4 @@
 #!/bin/zsh
-    
 gitd() {
     if [ -z "$1" ]; then
         echo "\e[1;31m[✖] Error: \e[0mUsage: gitd <repo_url> [branch (optional)]"
