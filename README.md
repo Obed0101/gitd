@@ -58,7 +58,7 @@ This project provides a simple Zsh script (`gitd`) to streamline the process of 
 
 ## Built With 🛠️
 
-Zsh (Z shell)
+* Zsh (Z shell)
 
 ## Getting Started 🚀
 
