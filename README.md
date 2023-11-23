@@ -1,7 +1,7 @@
 <br/>
 <p align="center">
   <a href="https://github.com/xXDeathAbyssXx/gitd">
-    <img src="https://i.imgur.com/NxZCmoU.png" alt="Logo" width="80" height="80">
+    <img src="https://i.imgur.com/NxZCmoU.png" alt="Logo">
   </a>
 
   <h3 align="center">🚀 gitd</h3>
