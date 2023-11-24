@@ -21,55 +21,62 @@
   </p>
 </p>
 
+<div align="center">
+
 ![Downloads](https://img.shields.io/github/downloads/xXDeathAbyssXx/gitd/total) ![Contributors](https://img.shields.io/github/contributors/xXDeathAbyssXx/gitd?color=dark-green) ![Forks](https://img.shields.io/github/forks/xXDeathAbyssXx/gitd?style=social) ![Stargazers](https://img.shields.io/github/stars/xXDeathAbyssXx/gitd?style=social) ![Issues](https://img.shields.io/github/issues/xXDeathAbyssXx/gitd) ![License](https://img.shields.io/github/license/xXDeathAbyssXx/gitd) 
 
-## Table Of Contents 📚
+</div>
+
+## 📚 Table Of Contents
 
 * [About the Project](#about-the-project)
+* [Features](#features)
+* [Why gitd?](#why-gitd)
 * [Built With](#built-with)
 * [Getting Started](#getting-started)
   * [Prerequisites](#prerequisites)
   * [Installation](#installation)
 * [Usage](#usage)
-* [Roadmap](#roadmap)
+* [Customizing Repository Location](#customizing-repository-location)
+* [Examples](#examples)
 * [Contributing](#contributing)
+* [Roadmap](#roadmap)
 * [License](#license)
+* [Creating A Pull Request](#creating-a-pull-request)
 * [Authors](#authors)
-* [Acknowledgements](#acknowledgements)
 
-## About The Project 🚀
+## 🚀 About The Project 
 
 ![Screen Shot](images/screenshot.png)
 
 This project provides a simple Zsh script (`gitd`) to streamline the process of downloading Git repositories. It offers a user-friendly command-line interface to quickly clone repositories with customizable settings.
 
-## Features ✨
+## ✨ Features 
 
 - 🔄 **Easy Cloning:** Quickly clone Git repositories with just a few commands.
 - 📁 **Customizable Base Directory:** Choose your preferred base directory for downloaded repositories.
 - 🎨 **Stylish Logs:** Colorful and informative logs for a better user experience.
 - ⚙️ **Configuration Options:** Customize the script behavior using environment variables.
 
-## Why gitd? 🤔
+## 🤔 Why gitd? 
 
 - **Simplicity:** gitd is designed to be straightforward and easy to use.
 - **Style:** Enjoy stylish and colorful logs during the cloning process.
 - **Configurability:** Tailor gitd to your preferences with customizable options.
 
-## Built With 🛠️
+## 🛠️ Built With 
 
 * Zsh (Z shell)
 
-## Getting Started 🚀
+## 🚀 Getting Started 
 
 To get started with `gitd`, follow the instructions below.
 
-### Prerequisites 📋
+### 📋 Prerequisites 
 
-* Zsh installed on your system
 * GitHub CLI (`gh`) for retrieving repository details
 
-### Installation 🛠️
+### 🛠️ Installation 
 
 1. Download the `gitd` script.
 
@@ -85,7 +92,9 @@ mv gitd /usr/local/bin
 chmod +x /usr/local/bin/gitd
 ```
 
-## Usage 🛠️
+Uninstalling?
+
+## 🛠️ Usage 
 
 Use the gitd script with the following syntax:
 
@@ -105,16 +114,16 @@ export GITD_BASE_DIR=~/my_repos
 
 Add this line to your shell configuration file (e.g., .zshrc or .bashrc) to make it persistent across sessions.
 
-## Examples 🚀
+## 🚀 Examples 
 
-- Clone a repository with the default settings: `./gitd.zsh https://github.com/example/repo.git`
-- Customize the base directory: `GITD_BASE_DIR=~/my_repos ./gitd.zsh https://github.com/example/repo.git`
+- Clone a repository with the default settings: `gitd https://github.com/xXDeathAbyssXx/gitd`
+- Customize the base directory: `export GITD_BASE_DIR=~/Downloads`
 
-## Roadmap 🗺️
+## 🗺️ Roadmap 
 
 See the [open issues](https://github.com/xXDeathAbyssXx/gitd/issues) for a list of proposed features (and known issues).
 
-## Contributing 🤝
+## 🤝 Contributing 
 
 Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 * If you have suggestions for adding or removing projects, feel free to [open an issue](https://github.com/xXDeathAbyssXx/gitd/issues/new) to discuss it, or directly create a pull request after you edit the *README.md* file with necessary changes.
@@ -122,7 +131,7 @@ Contributions are what make the open source community such an amazing place to b
 * Create individual PR for each suggestion.
 * Please also read through the [Code Of Conduct](https://github.com/xXDeathAbyssXx/gitd/blob/main/CODE_OF_CONDUCT.md) before posting your first idea as well.
 
-### Creating A Pull Request 🌐
+### 🌐 Creating A Pull Request 
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
@@ -130,10 +139,10 @@ Contributions are what make the open source community such an amazing place to b
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## License 📄
+## 📄 License 
 
-Distributed under the MIT License. See [LICENSE](https://github.com/xXDeathAbyssXx/gitd/blob/main/LICENSE.md) for more information.
+Distributed under the Apache License. See [LICENSE](https://github.com/xXDeathAbyssXx/gitd/blob/main/LICENSE.md) for more information.
 
-## Authors 🌟
+## 🌟 Authors 
 
 * **DeathAbyss** - *Fullstack Developer* - [DeathAbyss](https://github.com/xXDeathAbyssXx) - *Built gitd*
