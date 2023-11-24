@@ -31,16 +31,13 @@ gitd() {
         echo "\e[1;32m[✔] Target directory deleted.\e[0m"
     fi
 
-    # Get the default branch of the repository using gh
     local default_branch
     default_branch=$(gh api repos/$repo_owner/$repo_name --jq '.default_branch')
 
-    # If no branch is provided, use the default branch
     if [ -z "$branch" ]; then
         branch=$default_branch
     fi
 
-    # Clone the repository with only the latest commit and switch to the specified branch
     echo ""
     echo "\e[1;36m[⬇] Cloning repository...\e[0m"
     git clone --depth 1 -b $branch $repo_url $target_dir >/dev/null 2>&1
