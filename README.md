@@ -74,25 +74,24 @@ To get started with `gitd`, follow the instructions below.
 
 ### 📋 Prerequisites 
 
+* Zsh installed on your system
 * GitHub CLI (`gh`) for retrieving repository details
 
 ### 🛠️ Installation 
 
-1. Download the `gitd` script.
+<table><tr><td colspan="3">
 
-2. Move the script to a directory in your shell's PATH. For example, you can move it to `~/bin` or `/usr/local/bin`:
+gitd can be easily installed and used with the following steps:
+
+
+</td></tr><tr><td valign="top">
+
+<details><summary> zsh </summary><p>
 
 ```bash
-mv gitd /usr/local/bin
+source ~/gitd/gitd.zsh
 ```
-
-3. Give execute permissions to the script:
-
-```sh
-chmod +x /usr/local/bin/gitd
-```
-
-Uninstalling?
+</p></details></td></tr></table>
 
 ## 🛠️ Usage 
 
