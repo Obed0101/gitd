@@ -16,10 +16,9 @@ gitd() {
 
     if [ -e "$target_dir" ]; then
         echo ""
-        echo "\e[1;33m[!] Warning: \e[0mTarget directory '$target_dir' already exists."
-        echo ""
         echo -n "\e[1;34m::\e[0m Do you want to delete it and re-download the repository? [Y/n]: "
-        read response
+        read -r response
+        response=${response:-Y}
 
         if [[ ! $response =~ ^[Yy]$ ]]; then
             echo ""
@@ -50,7 +49,7 @@ gitd() {
         echo "\e[1;34m[ℹ] Repository details:"
         echo "\e[1;34m  • Name: \e[0m$repo_name"
         echo "\e[1;34m  • Owner: \e[0m$repo_owner"
-        echo "\e[1;34m  • Default Branch: \e[0m$default_branch"
+        echo "\e[1;34m  • Default Branch: \e[0m$branch"
         echo "\e[1;34m[ℹ] Repository location:"
         echo "\e[1;36m  $target_dir\e[0m"
     else
