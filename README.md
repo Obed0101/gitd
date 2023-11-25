@@ -24,7 +24,6 @@
 <div align="center">
 
 ![Downloads](https://img.shields.io/github/downloads/xXDeathAbyssXx/gitd/total) ![Contributors](https://img.shields.io/github/contributors/xXDeathAbyssXx/gitd?color=dark-green) ![Forks](https://img.shields.io/github/forks/xXDeathAbyssXx/gitd?style=social) ![Stargazers](https://img.shields.io/github/stars/xXDeathAbyssXx/gitd?style=social) ![Issues](https://img.shields.io/github/issues/xXDeathAbyssXx/gitd) ![License](https://img.shields.io/github/license/xXDeathAbyssXx/gitd) 
-
 </div>
 
 ## 📚 Table Of Contents
