@@ -25,6 +25,20 @@ gitd() {
             setup=true
             shift
             ;;
+        -v | --version)
+            echo "gitd version 0.1-beta"
+            return 0
+            ;;
+        -h | --help)
+            echo "Usage: gitd <repo_url> [options]"
+            echo ""
+            echo "Options:"
+            echo "  -h, --help     Show this help message"
+            echo "  -v, --version  Display the script version"
+            echo "  -s, --setup    Set up the downloaded repository, including installing dependencies"
+            echo "  -b, --branch   Specify the branch for cloning"
+            return 0
+            ;;
         *)
             repo_url=$1
             shift

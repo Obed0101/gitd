@@ -82,7 +82,7 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/xXDeathAbyssXx/gitd/main
 Use the gitd script with the following syntax:
 
 ```sh
-gitd [options] <repo_url> [branch]
+gitd [options] <repo_url> [options]
 ```
 Replace <repo_url> with the URL of the Git repository you want to download. Optionally, you can specify a branch.
 
@@ -93,6 +93,7 @@ Replace <repo_url> with the URL of the Git repository you want to download. Opti
 | `-h, --help`         | Show help message.                                   |
 | `-v, --version`      | Display the script version.                          |
 | `-s, --setup`        | Set up the downloaded repository, including installing dependencies. |
+| `-b, --branch`	     | Specify the branch for cloning. |
 
 > **Note:** The setup option is currently compatible with the following package managers and systems:
 
@@ -118,8 +119,9 @@ Add this line to your shell configuration file (e.g., .zshrc or .bashrc) to make
 ## 🚀 Examples 
 
 - Clone a repository with the default settings: `gitd https://github.com/xXDeathAbyssXx/gitd`
-- Customize the base directory: `export GITD_BASE_DIR=~/Downloads`
+- Specify a branch for cloning: `gitd -b main https://github.com/xXDeathAbyssXx/gitd`
 - Set up a repository after cloning: `gitd -s https://github.com/example/repo`
+- Customize the base directory: `export GITD_BASE_DIR=~/Downloads`
 
 ## 🗺️ Roadmap 
 
@@ -131,7 +133,7 @@ Contributions are what make the open source community such an amazing place to b
 * If you have suggestions for adding or removing projects, feel free to [open an issue](https://github.com/xXDeathAbyssXx/gitd/issues/new) to discuss it, or directly create a pull request after you edit the *README.md* file with necessary changes.
 * Please make sure you check your spelling and grammar.
 * Create individual PR for each suggestion.
-* Please also read through the [Code Of Conduct](https://github.com/xXDeathAbyssXx/gitd/blob/main/CODE_OF_CONDUCT) before posting your first idea as well.
+* Please also read through the [Code Of Conduct](https://github.com/xXDeathAbyssXx/gitd/blob/main/CODE_OF_CONDUCT.md) before posting your first idea as well.
 
 ### 🌐 Creating A Pull Request 
 

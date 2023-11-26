@@ -1,8 +1,8 @@
-# Gitd Code of Conduct
+# gitd Code of Conduct
 
-🤝 **Code of Conduct for Gitd**
+🤝 **Code of Conduct for gitd**
 
-Welcome to the Gitd community! To ensure a positive and inclusive environment, we have established this Code of Conduct that applies to all community members, contributors, and maintainers. Please read and adhere to these guidelines when participating in the Gitd project.
+Welcome to the gitd community! To ensure a positive and inclusive environment, we have established this Code of Conduct that applies to all community members, contributors, and maintainers. Please read and adhere to these guidelines when participating in the gitd project.
 
 ## Our Pledge
 
@@ -40,6 +40,6 @@ Welcome to the Gitd community! To ensure a positive and inclusive environment, w
 
 🙏 This Code of Conduct is adapted from the Contributor Covenant, version 2.0, available at https://www.contributor-covenant.org/version/2/0/code_of_conduct.html
 
-Thank you for contributing to a positive and inclusive Gitd community!
+Thank you for contributing to a positive and inclusive gitd community!
 
 **Note: This Code of Conduct is subject to change without notice.**
