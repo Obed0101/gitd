@@ -49,13 +49,13 @@
 ![Screen Shot](images/screenshot.png)
 
 This project provides a simple Zsh script (`gitd`) to streamline the process of downloading Git repositories. It offers a user-friendly command-line interface to quickly clone repositories with customizable settings.
-
 ## ✨ Features 
 
 - 🔄 **Easy Cloning:** Quickly clone Git repositories with just a few commands.
 - 📁 **Customizable Base Directory:** Choose your preferred base directory for downloaded repositories.
 - 🎨 **Stylish Logs:** Colorful and informative logs for a better user experience.
 - ⚙️ **Configuration Options:** Customize the script behavior using environment variables.
+- ⚙️ **Setup Option:** Set up the downloaded repository, including installing dependencies.
 
 ## 🤔 Why gitd? 
 
@@ -73,36 +73,46 @@ To get started with `gitd`, follow the instructions below.
 
 ### 📋 Prerequisites 
 
-* Zsh installed on your system
+* Zsh or Bash installed on your system
 * GitHub CLI (`gh`) for retrieving repository details
 
 ### 🛠️ Installation 
 
-<table><tr><td colspan="3">
-
-gitd can be easily installed and used with the following steps:
-
-
-</td></tr><tr><td valign="top">
-
-<details><summary> zsh </summary><p>
+You can install `gitd` by running the following command in your terminal:
 
 ```bash
-source ~/gitd/gitd.zsh
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/xXDeathAbyssXx/gitd/main/install.sh)"
 ```
-</p></details></td></tr></table>
 
 ## 🛠️ Usage 
 
 Use the gitd script with the following syntax:
 
 ```sh
-gitd <repo_url> [branch]
+gitd [options] <repo_url> [branch]
 ```
-
 Replace <repo_url> with the URL of the Git repository you want to download. Optionally, you can specify a branch.
 
-## Customizing Repository Location 🌐
+### ⚙️ Options:
+
+| Option               | Description                                          |
+|----------------------|------------------------------------------------------|
+| `-h, --help`         | Show help message.                                   |
+| `-v, --version`      | Display the script version.                          |
+| `-s, --setup`        | Set up the downloaded repository, including installing dependencies. |
+
+> **Note:** The setup option is currently compatible with the following package managers and systems:
+
+- **npm:** Node.js package manager
+- **yarn:** Fast, reliable, and secure dependency management
+- **pnpm:** Fast, disk space efficient package manager
+- **bundle:** Ruby dependency manager
+- **mvn:** Apache Maven for Java projects
+- **go:** Go programming language
+- **gcc:** GNU Compiler Collection (for C/C++ projects)
+
+
+## 🌐 Customizing Repository Location 
 
 By default, gitd saves repositories in the $HOME/Repos directory. You can customize this location by setting the GITD_BASE_DIR environment variable. For example:
 
@@ -116,6 +126,7 @@ Add this line to your shell configuration file (e.g., .zshrc or .bashrc) to make
 
 - Clone a repository with the default settings: `gitd https://github.com/xXDeathAbyssXx/gitd`
 - Customize the base directory: `export GITD_BASE_DIR=~/Downloads`
+- Set up a repository after cloning: `gitd -s https://github.com/example/repo`
 
 ## 🗺️ Roadmap 
 

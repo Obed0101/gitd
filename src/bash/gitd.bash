@@ -22,7 +22,7 @@ gitd() {
         echo "Options:"
         echo "  -h, --help     Show this help message"
         echo "  -v, --version  Display the script version"
-        echo "  -s, --setup    Set up the downloaded repository (e.g., install dependencies)"
+        echo "  -s, --setup    Set up the downloaded repository, including installing dependencies"
 
         return 0
     fi
