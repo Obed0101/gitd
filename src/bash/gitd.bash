@@ -7,35 +7,35 @@ session_pwd=$(pwd)
 gitd() {
     if [ -z "$1" ]; then
         echo -e "${COLOR_RED}${CROSS_MARK} Error: ${COLOR_RESET}(use -h or --help for help)"
-        echo "Usage: gitd <repo_url> [branch (optional)]"
+        echo "Usage: gitd <repo_url> [options]"
         return 1
-    fi
-
-    if [ "$1" = "--version" ] || [ "$1" = "-v" ]; then
-        echo "gitd version 1.0"
-        return 0
-    fi
-
-    if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
-        echo "Usage: gitd [options] <repo_url> [branch]"
-        echo ""
-        echo "Options:"
-        echo "  -h, --help     Show this help message"
-        echo "  -v, --version  Display the script version"
-        echo "  -s, --setup    Set up the downloaded repository, including installing dependencies"
-
-        return 0
     fi
 
     local repo_url
     local branch
+    local setup=false
 
-    if [ "$1" = "--setup" ] || [ "$1" = "-s" ]; then
-        repo_url=$2
-        branch=$3
-    else
-        repo_url=$1
-        branch=$2
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+        -b | --branch)
+            branch=$2
+            shift 2
+            ;;
+        -s | --setup)
+            setup=true
+            shift
+            ;;
+        *)
+            repo_url=$1
+            shift
+            ;;
+        esac
+    done
+
+    if [ -z "$repo_url" ]; then
+        echo -e "${COLOR_RED}${CROSS_MARK} Error: ${COLOR_RESET}No repository URL provided."
+        echo "Usage: gitd <repo_url> [options]"
+        return 1
     fi
 
     local repo_name=$(basename "$repo_url" .git)
@@ -91,13 +91,13 @@ gitd() {
         echo -e "${COLOR_CYAN}${INFO_MARK} Repository details:${COLOR_RESET}"
         echo -e "${COLOR_CYAN}  • Name: ${COLOR_RESET}$repo_name"
         echo -e "${COLOR_CYAN}  • Owner: ${COLOR_RESET}$repo_owner"
-        echo -e "${COLOR_CYAN}  • Default Branch: ${COLOR_RESET}$branch"
+        echo -e "${COLOR_CYAN}  • Branch: ${COLOR_RESET}$branch"
         echo -e "${COLOR_CYAN}  • Size: ${COLOR_RESET}$(format_size $repo_size)"
         echo -e "${COLOR_CYAN}${INFO_MARK} Repository location:${COLOR_RESET}"
         echo -e "${COLOR_GREEN}  $target_dir${COLOR_RESET}"
         echo ""
         cd "$target_dir"
-        if [ "$1" = "--setup" ] || [ "$1" = "-s" ]; then
+        if [ "$setup" = true ]; then
             bash "$GITD_INSTALL/src/scripts/setup.sh"
         fi
         cd "$session_pwd"

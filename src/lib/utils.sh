@@ -1,5 +1,7 @@
 #!/bin/sh
 
+source "$GITD_INSTALL/src/lib/spinner.sh"
+
   if [ -t 1 ]; then
    INFO_MARK="\e[1;34mi\e[0m"
 CHECK_MARK="\e[1;32m✔\e[0m"
@@ -33,28 +35,34 @@ SHELL_NAME=$(basename "$SHELL")
 function show_loading() {
 case "$SHELL_NAME" in
   "bash")
-loading_message="$1"
-completion_message="$2"
-command_to_execute="$3"
+    loading_message="$1"
+      completion_message="$2"
+      command_to_execute="$3"
 
-spin="/-\|"
-index=0
+      spin="/-\|"
+      index=0
 
-{
-    while true; do
-        echo -en "\r${spin:$index:1} ${loading_message}"
-        sleep 0.1
-        index=$(( (index + 1) % 4 ))
-    done
-} &
+      (
+        while true; do
+          echo -en "\r${spin:$index:1} ${loading_message}"
+          sleep 0.1
+          index=$(( (index + 1) % 4 ))
+        done
+      ) &
 
-SPIN_PID=$!
+      SPIN_PID=$!
 
-command_output=$(eval "$command_to_execute" 2>&1)
+      command_output=$(eval "$command_to_execute" 2>&1)
+      command_exit_status=$?
 
-kill $SPIN_PID
+      kill $SPIN_PID
+      wait $SPIN_PID 2>/dev/null
 
-echo -e "\r${completion_message}\n"
+      if [ $command_exit_status -eq 0 ]; then
+        echo -e "\r${completion_message}\n"
+      else
+        echo -e "\r${COLOR_RED}${CROSS_MARK} Error executing the command.${COLOR_RESET}\n"
+      fi
     ;;
   "zsh")
     loading_message="$1"
@@ -74,11 +82,16 @@ echo -e "\r${completion_message}\n"
 
     SPIN_PID=$!
 
-    command_output=$(eval "$command_to_execute" 2>&1)
+     command_output=$(eval "$command_to_execute" 2>&1)
+     command_exit_status=$?
 
     kill $SPIN_PID
 
-    echo -e "\r${completion_message}\n"
+     if [ $command_exit_status -eq 0 ]; then
+        echo -e "\r${completion_message}\n"
+      else
+        echo -e "\r${COLOR_RED}${CROSS_MARK} Error executing the command.${COLOR_RESET}"
+      fi
     ;;
   *)
      echo ""
