@@ -331,7 +331,7 @@ elif [ -e go.mod ]; then
     echo ""
     show_loading "Running Go install..." "${COLOR_GREEN}${CHECK_MARK} Go install completed successfully.${COLOR_RESET}" "go build"
 
-elif [ -e Makefile ]; then
+elif [ -e makefile ] || [ -e MAKEFILE ] || [ -e Makefile ]; then
     echo ""
     echo -e "${COLOR_GREEN}${CHECK_MARK} Detected C/C++ project.${COLOR_RESET}"
 
