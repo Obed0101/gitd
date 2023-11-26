@@ -6,7 +6,7 @@ The gitd team takes the security of our software seriously. We appreciate the ef
 
 ## Reporting a Vulnerability
 
-🔒 If you believe you have found a security vulnerability in gitd, please help us by responsibly disclosing it to us first. Send your findings to the Owner Discord: [zdeathabyss](https://discordapp.com/users/1149424852986511441). Please do not create GitHub issues for security vulnerabilities.
+🔒 If you believe you have found a security vulnerability in gitd, please help us by responsibly disclosing it to us first. Send your findings to the [Owner](https://discordapp.com/users/1149424852986511441). Please do not create GitHub issues for security vulnerabilities.
 
 👉 Provide detailed information to help us understand and reproduce the vulnerability:
 
