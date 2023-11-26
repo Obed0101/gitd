@@ -4,21 +4,6 @@ source "$GITD_INSTALL/src/lib/utils.sh"
 
 session_pwd=$(pwd)
 
-CHECK_MARK="\e[1;32m✔\e[0m"
-CROSS_MARK="\e[1;31m✖\e[0m"
-INFO_MARK="\e[1;34mi\e[0m"
-WARNING_MARK="\e[1;33m!\e[0m"
-QUESTION_MARK="\e[1;35m?\e[0m"
-
-COLOR_RED='\e[1;31m'
-COLOR_GREEN='\e[1;32m'
-COLOR_YELLOW='\e[1;33m'
-COLOR_BLUE='\e[1;34m'
-COLOR_CYAN='\e[1;36m'
-COLOR_MAGENTA='\e[1;35m'
-COLOR_WHITE='\e[1;37m'
-COLOR_RESET='\e[0m'
-
 gitd() {
     if [ -z "$1" ]; then
         echo -e "${COLOR_RED}${CROSS_MARK} Error: ${COLOR_RESET}(use -h or --help for help)"
@@ -30,20 +15,20 @@ gitd() {
     local branch
     local setup=false
 
-    while (( $# > 0 )); do
+    while (($# > 0)); do
         case "$1" in
-            -b|--branch)
-                branch=$2
-                shift 2
-                ;;
-            -s|--setup)
-                setup=true
-                shift
-                ;;
-            *)
-                repo_url=$1
-                shift
-                ;;
+        -b | --branch)
+            branch=$2
+            shift 2
+            ;;
+        -s | --setup)
+            setup=true
+            shift
+            ;;
+        *)
+            repo_url=$1
+            shift
+            ;;
         esac
     done
 
@@ -98,7 +83,7 @@ gitd() {
         branch=$default_branch
     fi
 
-   echo ""
+    echo ""
     show_loading "Cloning repository..." "${COLOR_GREEN}${CHECK_MARK} Repository downloaded successfully.${COLOR_RESET}" "git clone --depth 1 -b "$branch" "$repo_url" "$target_dir""
 
     if [ $? -eq 0 ]; then
