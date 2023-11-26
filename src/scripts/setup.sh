@@ -1,7 +1,6 @@
 #!/bin/bash
 
 source "$GITD_INSTALL/src/lib/utils.sh"
-setup_color
 
 echo -e "${COLOR_CYAN}${INFO_MARK} Running setup...${COLOR_RESET}"
 

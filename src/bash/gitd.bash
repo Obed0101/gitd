@@ -1,7 +1,6 @@
 #!/bin/bash
 
 source "$GITD_INSTALL/src/lib/utils.sh"
-setup_color
 
 session_pwd=$(pwd)
 
