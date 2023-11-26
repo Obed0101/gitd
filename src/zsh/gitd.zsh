@@ -32,12 +32,13 @@ gitd() {
     fi
 
     if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
-        echo "Usage: gitd <repo_url> [branch (optional)]"
+        echo "Usage: gitd [options] <repo_url> [branch]"
         echo ""
         echo "Options:"
         echo "  -h, --help     Show this help message"
         echo "  -v, --version  Display the script version"
         echo "  -s, --setup    Set up the downloaded repository (e.g., install dependencies)"
+
         return 0
     fi
 
