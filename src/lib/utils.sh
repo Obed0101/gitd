@@ -1,13 +1,12 @@
 #!/bin/sh
 
-source "$GITD_INSTALL/src/lib/spinner.sh"
-
   if [ -t 1 ]; then
-   INFO_MARK="\e[1;34mi\e[0m"
+INFO_MARK="\e[1;34mi\e[0m"
 CHECK_MARK="\e[1;32m✔\e[0m"
 CROSS_MARK="\e[1;31m✖\e[0m"
 WARNING_MARK="\e[1;33m!\e[0m"
 QUESTION_MARK="\e[1;35m?\e[0m"
+DOWNLOAD_MARK="\e[1;36m⬇\e[0m"
 
 COLOR_RED='\e[1;31m'
 COLOR_GREEN='\e[1;32m'
@@ -21,6 +20,7 @@ CHECK_MARK="✔"
 CROSS_MARK="✖"
 WARNING_MARK="!"
 QUESTION_MARK="?"
+DOWNLOAD_MARK="⬇"
 
 COLOR_RED=''
 COLOR_GREEN=''
@@ -35,28 +35,14 @@ SHELL_NAME=$(basename "$SHELL")
 function show_loading() {
 case "$SHELL_NAME" in
   "bash")
-    loading_message="$1"
+      loading_message="$1"
       completion_message="$2"
       command_to_execute="$3"
 
-      spin="/-\|"
-      index=0
-
-      (
-        while true; do
-          echo -en "\r${spin:$index:1} ${loading_message}"
-          sleep 0.1
-          index=$(( (index + 1) % 4 ))
-        done
-      ) &
-
-      SPIN_PID=$!
+      echo -en "\r${DOWNLOAD_MARK} ${loading_message}"
 
       command_output=$(eval "$command_to_execute" 2>&1)
       command_exit_status=$?
-
-      kill $SPIN_PID
-      wait $SPIN_PID 2>/dev/null
 
       if [ $command_exit_status -eq 0 ]; then
         echo -e "\r${completion_message}\n"
@@ -68,24 +54,12 @@ case "$SHELL_NAME" in
     loading_message="$1"
     completion_message="$2"
     command_to_execute="$3"
+    
 
-    spin="/-\|"
-    index=0
-
-    { 
-        while true; do
-            echo -en "\r${spin:$index:1} ${loading_message}"
-            sleep 0.1
-            index=$(( (index + 1) % 4 ))
-        done
-    } &!
-
-    SPIN_PID=$!
+    echo -en "\r${DOWNLOAD_MARK} ${loading_message}"
 
      command_output=$(eval "$command_to_execute" 2>&1)
      command_exit_status=$?
-
-    kill $SPIN_PID
 
      if [ $command_exit_status -eq 0 ]; then
         echo -e "\r${completion_message}\n"
