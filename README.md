@@ -148,3 +148,4 @@ Distributed under the Apache License. See [LICENSE](https://github.com/xXDeathAb
 ## 🌟 Authors 
 
 * **DeathAbyss** - *Fullstack Developer* - [DeathAbyss](https://github.com/xXDeathAbyssXx) - *Built gitd*
+* **AlphaTechnolog** - *Fullstack Developer* - [AlphaTechnolog](https://github.com/AlphaTechnolog) - *Developer/Tester of gitd*
