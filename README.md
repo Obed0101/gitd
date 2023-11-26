@@ -9,12 +9,6 @@
   <p align="center">
     Simplify Git repository downloads with ease!
     <br/>
-    <br/>
-    <a href="https://github.com/xXDeathAbyssXx/gitd"><strong>Explore the docs »</strong></a>
-    <br/>
-    <br/>
-    <a href="https://github.com/xXDeathAbyssXx/gitd">View Demo</a>
-    .
     <a href="https://github.com/xXDeathAbyssXx/gitd/issues">Report Bug</a>
     .
     <a href="https://github.com/xXDeathAbyssXx/gitd/issues">Request Feature</a>
@@ -28,25 +22,24 @@
 
 ## 📚 Table Of Contents
 
-* [About the Project](#about-the-project)
-* [Features](#features)
-* [Why gitd?](#why-gitd)
-* [Built With](#built-with)
-* [Getting Started](#getting-started)
-  * [Prerequisites](#prerequisites)
-  * [Installation](#installation)
-* [Usage](#usage)
-* [Customizing Repository Location](#customizing-repository-location)
-* [Examples](#examples)
-* [Contributing](#contributing)
-* [Roadmap](#roadmap)
-* [License](#license)
-* [Creating A Pull Request](#creating-a-pull-request)
-* [Authors](#authors)
+* [About the Project](#🚀-about-the-project)
+* [Features](#✨-features)
+* [Why gitd?](#🤔-why-gitd)
+* [Built With](#🛠️-built-with)
+* [Getting Started](#🚀-getting-started)
+  * [Prerequisites](#📋-prerequisites)
+  * [Installation](#🛠️-installation)
+* [Usage](#🛠️-usage)
+  * [Options](#⚙️-options)
+* [Customizing Repository Location](#🌐-customizing-repository-location)
+* [Examples](#🚀-examples)
+* [Roadmap](#🗺️-roadmap)
+* [Contributing](#🤝-contributing)
+  * [Creating A Pull Request](#🌐-creating-a-pull-request)
+* [License](#📄-license)
+* [Authors](#🌟-authors)
 
 ## 🚀 About The Project 
-
-![Screen Shot](images/screenshot.png)
 
 This project provides a simple Zsh script (`gitd`) to streamline the process of downloading Git repositories. It offers a user-friendly command-line interface to quickly clone repositories with customizable settings.
 ## ✨ Features 
