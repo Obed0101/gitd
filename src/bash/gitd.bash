@@ -80,7 +80,7 @@ gitd() {
         echo ""
         echo -e "${COLOR_CYAN}${INFO_MARK} Repository size: ${COLOR_RESET}$(format_size $repo_size)"
         echo ""
-        read -r -p "$(echo -e '\033[1;34m::\033[0m') Do you want to delete it and re-download the repository? [Y/n]: " response
+        read -r -p "$(echo -e '\033[1;34m::\033[0m') Proceed with installation? [Y/n]: " response
         response=${response:-Y}
 
         if [[ ! $response =~ ^[Yy]$ ]]; then
