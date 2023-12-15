@@ -21,6 +21,23 @@ if [ -e pom.xml ]; then
     echo ""
     show_loading "Running Maven install..." "${COLOR_GREEN}${CHECK_MARK} Maven install completed successfully.${COLOR_RESET}" "mvn clean install install"
 
+elif [ -e Gemfile ]; then
+    echo ""
+    echo -e "${COLOR_GREEN}${CHECK_MARK} Detected Ruby project.${COLOR_RESET}"
+
+    if ! command -v ruby &>/dev/null; then
+        echo ""
+        read -r -p "$(echo -e '\033[1;34m::\033[0m Do you want to install Ruby? [Y/n]: ')" response
+        response=${response:-Y}
+
+        if [[ ! $response =~ ^[Yy]$ ]]; then
+            install_ruby
+        fi
+    fi
+
+    echo ""
+    show_loading "Running Bundler install..." "${COLOR_GREEN}${CHECK_MARK} Bundler install completed successfully.${COLOR_RESET}" "bundle install"
+
 elif [ -e go.mod ]; then
     echo ""
     echo -e "${COLOR_GREEN}${CHECK_MARK} Detected Go project.${COLOR_RESET}"
