@@ -101,12 +101,13 @@ gitd() {
     show_loading "Cloning repository..." "${COLOR_GREEN}${CHECK_MARK} Repository downloaded successfully.${COLOR_RESET}" "git clone --depth 1 -b "$branch" "$repo_url" "$target_dir""
 
     if [ $? -eq 0 ]; then
+        rm -rf "$target_dir/.git"
         local downloaded_size=$(du -sh "$target_dir" | cut -f1)
         echo -e "${COLOR_CYAN}${INFO_MARK} Repository details:${COLOR_RESET}"
         echo -e "${COLOR_CYAN}  • Name: ${COLOR_RESET}$repo_name"
         echo -e "${COLOR_CYAN}  • Owner: ${COLOR_RESET}$repo_owner"
         echo -e "${COLOR_CYAN}  • Branch: ${COLOR_RESET}$branch"
-        echo -e "${COLOR_CYAN}  • Size: ${COLOR_RESET}$(format_size $repo_size)"
+        echo -e "${COLOR_CYAN}  • Size: ${COLOR_RESET}${downloaded_size}"
         echo -e "${COLOR_CYAN}${INFO_MARK} Repository location:${COLOR_RESET}"
         echo -e "${COLOR_GREEN}  $target_dir${COLOR_RESET}"
         echo ""

@@ -4,7 +4,58 @@ source "$GITD_INSTALL/src/lib/utils.sh"
 
 echo -e "${COLOR_CYAN}${INFO_MARK} Running setup...${COLOR_RESET}"
 
-if [ -e pnpm-lock.yaml ]; then
+if [ -e pom.xml ]; then
+    echo ""
+    echo -e "${COLOR_GREEN}${CHECK_MARK} Detected Java project.${COLOR_RESET}"
+
+    if ! command -v java &>/dev/null; then
+        echo ""
+        read -r -p "$(echo -e '\033[1;34m::\033[0m Do you want to install Java? [Y/n]: ')" response
+        response=${response:-Y}
+
+        if [[ ! $response =~ ^[Yy]$ ]]; then
+            install_java
+        fi
+    fi
+
+    echo ""
+    show_loading "Running Maven install..." "${COLOR_GREEN}${CHECK_MARK} Maven install completed successfully.${COLOR_RESET}" "mvn clean install install"
+
+elif [ -e go.mod ]; then
+    echo ""
+    echo -e "${COLOR_GREEN}${CHECK_MARK} Detected Go project.${COLOR_RESET}"
+
+    if ! command -v go &>/dev/null; then
+        echo ""
+        read -r -p "$(echo -e '\033[1;34m::\033[0m Do you want to install Go? [Y/n]: ')" response
+        response=${response:-Y}
+
+        if [[ ! $response =~ ^[Yy]$ ]]; then
+            install_go
+        fi
+    fi
+
+    echo ""
+    show_loading "Running Go install..." "${COLOR_GREEN}${CHECK_MARK} Go install completed successfully.${COLOR_RESET}" "go build"
+
+elif [ -e makefile ] || [ -e MAKEFILE ] || [ -e Makefile ]; then
+    echo ""
+    echo -e "${COLOR_GREEN}${CHECK_MARK} Detected C/C++ project.${COLOR_RESET}"
+
+    if ! command -v gcc &>/dev/null; then
+        echo ""
+        read -r -p "$(echo -e '\033[1;34m::\033[0m Do you want to install GCC? [Y/n]: ')" response
+        response=${response:-Y}
+
+        if [[ ! $response =~ ^[Yy]$ ]]; then
+            install_gcc
+        fi
+    fi
+
+    echo ""
+    show_loading "Running Make..." "${COLOR_GREEN}${CHECK_MARK} Make completed successfully.${COLOR_RESET}" "make"
+
+elif [ -e pnpm-lock.yaml ]; then
     echo ""
     echo -e "${COLOR_GREEN}${CHECK_MARK} Detected pnpm project.${COLOR_RESET}"
 
@@ -58,57 +109,6 @@ elif [ -e package.json ]; then
 
     echo ""
     show_loading "Running npm install..." "${COLOR_GREEN}${CHECK_MARK} npm install completed successfully.${COLOR_RESET}" "npm install"
-
-elif [ -e pom.xml ]; then
-    echo ""
-    echo -e "${COLOR_GREEN}${CHECK_MARK} Detected Java project.${COLOR_RESET}"
-
-    if ! command -v java &>/dev/null; then
-        echo ""
-        read -r -p "$(echo -e '\033[1;34m::\033[0m Do you want to install Java? [Y/n]: ')" response
-        response=${response:-Y}
-
-        if [[ ! $response =~ ^[Yy]$ ]]; then
-            install_java
-        fi
-    fi
-
-    echo ""
-    show_loading "Running Maven install..." "${COLOR_GREEN}${CHECK_MARK} Maven install completed successfully.${COLOR_RESET}" "mvn clean install install"
-
-elif [ -e go.mod ]; then
-    echo ""
-    echo -e "${COLOR_GREEN}${CHECK_MARK} Detected Go project.${COLOR_RESET}"
-
-    if ! command -v go &>/dev/null; then
-        echo ""
-        read -r -p "$(echo -e '\033[1;34m::\033[0m Do you want to install Go? [Y/n]: ')" response
-        response=${response:-Y}
-
-        if [[ ! $response =~ ^[Yy]$ ]]; then
-            install_go
-        fi
-    fi
-
-    echo ""
-    show_loading "Running Go install..." "${COLOR_GREEN}${CHECK_MARK} Go install completed successfully.${COLOR_RESET}" "go build"
-
-elif [ -e makefile ] || [ -e MAKEFILE ] || [ -e Makefile ]; then
-    echo ""
-    echo -e "${COLOR_GREEN}${CHECK_MARK} Detected C/C++ project.${COLOR_RESET}"
-
-    if ! command -v gcc &>/dev/null; then
-        echo ""
-        read -r -p "$(echo -e '\033[1;34m::\033[0m Do you want to install GCC? [Y/n]: ')" response
-        response=${response:-Y}
-
-        if [[ ! $response =~ ^[Yy]$ ]]; then
-            install_gcc
-        fi
-    fi
-
-    echo ""
-    show_loading "Running Make..." "${COLOR_GREEN}${CHECK_MARK} Make completed successfully.${COLOR_RESET}" "make"
 
 else
     echo ""
