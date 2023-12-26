@@ -26,7 +26,7 @@ gitd() {
             shift
             ;;
         -v | --version)
-            echo "gitd version 0.1-beta"
+            echo "gitd version 0.2-beta"
             return 0
             ;;
         -h | --help)
