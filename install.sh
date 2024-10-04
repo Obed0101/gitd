@@ -66,7 +66,7 @@ EOF
 GITD_INSTALL_DIR="$HOME/.gitd"
 
 echo ""
-git clone --depth 1 https://github.com/xXDeathAbyssXx/gitd.git "$GITD_INSTALL_DIR"
+git clone --depth 1 https://github.com/Obed0101/gitd.git "$GITD_INSTALL_DIR"
 echo ""
 
 SHELL_NAME=$(basename "$SHELL")
@@ -81,7 +81,7 @@ else
     echo -e "${COLOR_RED}${CROSS_MARK} Unsupported shell: $SHELL_NAME. Please manually configure gitd in your shell's RC file.${COLOR_RESET}"
 fi
 
-repo_size=$(gh api repos/xXDeathAbyssXx/gitd --jq '.size')
+repo_size=$(gh api repos/Obed0101/gitd --jq '.size')
 
 echo -e "\n${COLOR_CYAN}${INFO_MARK} gitd installation details:${COLOR_RESET}"
 echo -e "${COLOR_CYAN}  • Installation directory: ${COLOR_RESET}$GITD_INSTALL_DIR"
