@@ -15,21 +15,21 @@ gitd() {
     local branch
     local setup=false
 
-    while (($# > 0)); do
-        case "$1" in
-        -b | --branch)
+while (($# > 0)); do
+    case "$1" in
+        (-b|--branch)
             branch=$2
             shift 2
             ;;
-        -s | --setup)
+        (-s|--setup)
             setup=true
             shift
             ;;
-        -v | --version)
+        (-v|--version)
             echo "gitd version 0.2-beta"
             return 0
             ;;
-        -h | --help)
+        (-h|--help)
             echo "Usage: gitd <repo_url> [options]"
             echo ""
             echo "Options:"
@@ -39,12 +39,12 @@ gitd() {
             echo "  -b, --branch   Specify the branch for cloning"
             return 0
             ;;
-        *)
+        (*)
             repo_url=$1
             shift
             ;;
-        esac
-    done
+    esac
+done
 
     if [ -z "$repo_url" ]; then
         echo -e "${COLOR_RED}${CROSS_MARK} Error: ${COLOR_RESET}No repository URL provided."
@@ -56,6 +56,12 @@ gitd() {
     local repo_owner=$(echo "$repo_url" | cut -d '/' -f 4)
     local base_dir=${GITD_BASE_DIR:-"$HOME/Repos"}
     local target_dir="$base_dir/$repo_name"
+
+    if ! gh repo view "$repo_owner/$repo_name" &>/dev/null; then
+        echo -e "${COLOR_RED}${CROSS_MARK} Error: ${COLOR_RESET}The repository '$repo_owner/$repo_name' does not exist or you don't have access."
+        return 1
+    fi
+
     local repo_size=$(gh api repos/"$repo_owner"/"$repo_name" --jq '.size')
 
     if [ -e "$target_dir" ]; then
