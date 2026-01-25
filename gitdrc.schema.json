@@ -1,0 +1,595 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/Obed0101/gitd/schemas/gitdrc.schema.json",
+  "title": "GITD Repository Configuration",
+  "description": "Configuration schema for per-repository GITD settings (.gitdrc file)",
+  "type": "object",
+  "required": ["version"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Configuration file version",
+      "enum": ["1.0"],
+      "default": "1.0",
+      "examples": ["1.0"]
+    },
+    "detection": {
+      "type": "object",
+      "description": "Override automatic project detection settings",
+      "additionalProperties": false,
+      "properties": {
+        "language": {
+          "type": "string",
+          "description": "Force a specific programming language detection",
+          "enum": [
+            "javascript",
+            "typescript",
+            "rust",
+            "go",
+            "python",
+            "ruby",
+            "java",
+            "scala",
+            "php",
+            "elixir",
+            "erlang",
+            "dotnet",
+            "zig",
+            "swift",
+            "haskell",
+            "lua",
+            "dart",
+            "nim",
+            "ocaml",
+            "clojure",
+            "cpp",
+            "vlang"
+          ],
+          "examples": ["javascript", "typescript", "rust", "python"]
+        },
+        "tool": {
+          "type": "string",
+          "description": "Force a specific package manager or build tool",
+          "enum": [
+            "bun",
+            "pnpm",
+            "yarn",
+            "npm",
+            "cargo",
+            "go",
+            "uv",
+            "pip",
+            "poetry",
+            "pipenv",
+            "bundle",
+            "mvn",
+            "gradle",
+            "sbt",
+            "composer",
+            "mix",
+            "rebar3",
+            "dotnet",
+            "zig",
+            "swift",
+            "stack",
+            "cabal",
+            "luarocks",
+            "dart",
+            "nimble",
+            "dune",
+            "opam",
+            "clojure",
+            "lein",
+            "cmake",
+            "meson",
+            "make",
+            "autotools",
+            "v"
+          ],
+          "examples": ["bun", "pnpm", "cargo", "uv"]
+        },
+        "skip": {
+          "type": "boolean",
+          "description": "Skip automatic project detection entirely",
+          "default": false,
+          "examples": [false, true]
+        }
+      },
+      "examples": [
+        {
+          "language": "javascript",
+          "tool": "bun"
+        },
+        {
+          "language": "python",
+          "tool": "uv"
+        },
+        {
+          "skip": true
+        }
+      ]
+    },
+    "hooks": {
+      "type": "object",
+      "description": "Lifecycle hooks for repository operations",
+      "additionalProperties": false,
+      "properties": {
+        "post-clone": {
+          "$ref": "#/definitions/hookConfig",
+          "description": "Commands to run immediately after cloning the repository"
+        },
+        "pre-setup": {
+          "$ref": "#/definitions/hookConfig",
+          "description": "Commands to run before dependency installation"
+        },
+        "post-setup": {
+          "$ref": "#/definitions/hookConfig",
+          "description": "Commands to run after dependency installation"
+        }
+      },
+      "examples": [
+        {
+          "post-clone": {
+            "commands": ["cp .env.example .env", "chmod +x scripts/*.sh"],
+            "continueOnError": false
+          },
+          "post-setup": {
+            "commands": ["npm run db:migrate", "npm run seed"],
+            "timeout": 60000
+          }
+        }
+      ]
+    },
+    "setup": {
+      "type": "object",
+      "description": "Configure the setup process",
+      "additionalProperties": false,
+      "properties": {
+        "skip": {
+          "type": "boolean",
+          "description": "Skip the setup process entirely (no dependency installation)",
+          "default": false,
+          "examples": [false, true]
+        },
+        "commands": {
+          "type": "array",
+          "description": "Custom setup commands to run instead of auto-detected ones",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "examples": [
+            ["make setup"],
+            ["./scripts/bootstrap.sh", "npm run prepare"]
+          ]
+        },
+        "workdir": {
+          "type": "string",
+          "description": "Working directory for setup commands (relative to repository root)",
+          "pattern": "^[^/].*[^/]$|^[^/]$",
+          "examples": ["backend", "packages/api", "src"]
+        }
+      },
+      "examples": [
+        {
+          "skip": true
+        },
+        {
+          "commands": ["make install", "make build"],
+          "workdir": "backend"
+        }
+      ]
+    },
+    "env": {
+      "type": "object",
+      "description": "Environment variable configuration",
+      "additionalProperties": false,
+      "properties": {
+        "required": {
+          "type": "array",
+          "description": "Environment variables that must be set (setup fails if missing)",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z_][A-Z0-9_]*$"
+          },
+          "uniqueItems": true,
+          "examples": [
+            ["DATABASE_URL", "API_KEY"],
+            ["NODE_ENV", "PORT"]
+          ]
+        },
+        "optional": {
+          "type": "array",
+          "description": "Environment variables that are optional (warning if missing)",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z_][A-Z0-9_]*$"
+          },
+          "uniqueItems": true,
+          "examples": [
+            ["REDIS_URL", "SENTRY_DSN"],
+            ["LOG_LEVEL", "CACHE_TTL"]
+          ]
+        },
+        "defaults": {
+          "type": "object",
+          "description": "Default values for environment variables if not set",
+          "patternProperties": {
+            "^[A-Z_][A-Z0-9_]*$": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false,
+          "examples": [
+            {
+              "NODE_ENV": "development",
+              "PORT": "3000",
+              "LOG_LEVEL": "info"
+            }
+          ]
+        },
+        "prompts": {
+          "type": "object",
+          "description": "Environment variables that require user input during setup",
+          "patternProperties": {
+            "^[A-Z_][A-Z0-9_]*$": {
+              "type": "object",
+              "required": ["description"],
+              "additionalProperties": false,
+              "properties": {
+                "description": {
+                  "type": "string",
+                  "description": "Prompt message shown to the user",
+                  "minLength": 1
+                },
+                "default": {
+                  "type": "string",
+                  "description": "Default value for the prompt"
+                },
+                "secret": {
+                  "type": "boolean",
+                  "description": "Hide input (for passwords/tokens)",
+                  "default": false
+                },
+                "validate": {
+                  "type": "string",
+                  "description": "Regex pattern for input validation",
+                  "format": "regex"
+                }
+              }
+            }
+          },
+          "additionalProperties": false,
+          "examples": [
+            {
+              "API_KEY": {
+                "description": "Enter your API key",
+                "secret": true,
+                "validate": "^[a-zA-Z0-9]{32}$"
+              },
+              "DATABASE_URL": {
+                "description": "PostgreSQL connection string",
+                "default": "postgresql://localhost:5432/mydb"
+              }
+            }
+          ]
+        }
+      },
+      "examples": [
+        {
+          "required": ["DATABASE_URL", "API_KEY"],
+          "optional": ["REDIS_URL"],
+          "defaults": {
+            "NODE_ENV": "development",
+            "PORT": "3000"
+          },
+          "prompts": {
+            "API_KEY": {
+              "description": "Enter your API key",
+              "secret": true
+            }
+          }
+        }
+      ]
+    },
+    "workflows": {
+      "type": "object",
+      "description": "Predefined command workflows for common tasks",
+      "patternProperties": {
+        "^[a-z][a-z0-9-]*$": {
+          "type": "object",
+          "required": ["steps"],
+          "additionalProperties": false,
+          "properties": {
+            "description": {
+              "type": "string",
+              "description": "Human-readable workflow description",
+              "minLength": 1
+            },
+            "steps": {
+              "type": "array",
+              "description": "Commands to execute in sequence",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "minItems": 1
+            },
+            "workdir": {
+              "type": "string",
+              "description": "Working directory for workflow execution",
+              "pattern": "^[^/].*[^/]$|^[^/]$"
+            }
+          }
+        }
+      },
+      "additionalProperties": false,
+      "examples": [
+        {
+          "dev": {
+            "description": "Start development server",
+            "steps": ["npm run dev"]
+          },
+          "test": {
+            "description": "Run test suite",
+            "steps": ["npm run lint", "npm test"]
+          },
+          "deploy": {
+            "description": "Deploy to production",
+            "steps": ["npm run build", "npm run migrate", "pm2 restart app"],
+            "workdir": "backend"
+          }
+        }
+      ]
+    },
+    "security": {
+      "type": "object",
+      "description": "Security and safety settings",
+      "additionalProperties": false,
+      "properties": {
+        "requireConfirmation": {
+          "type": "boolean",
+          "description": "Require user confirmation before running setup commands",
+          "default": true,
+          "examples": [true, false]
+        },
+        "allowSudo": {
+          "type": "boolean",
+          "description": "Allow commands that require sudo/root privileges",
+          "default": false,
+          "examples": [false, true]
+        },
+        "restrictedCommands": {
+          "type": "array",
+          "description": "Commands that are blocked from execution",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true,
+          "examples": [
+            ["rm -rf", "sudo rm", "format", "dd"],
+            ["curl | sh", "wget | bash"]
+          ]
+        }
+      },
+      "examples": [
+        {
+          "requireConfirmation": true,
+          "allowSudo": false,
+          "restrictedCommands": ["rm -rf /", "dd if=", "mkfs"]
+        }
+      ]
+    },
+    "editor": {
+      "type": "object",
+      "description": "Editor integration settings",
+      "additionalProperties": false,
+      "properties": {
+        "open": {
+          "type": "string",
+          "description": "Editor command to open the project",
+          "enum": [
+            "code",
+            "code-insiders",
+            "vim",
+            "nvim",
+            "emacs",
+            "nano",
+            "idea",
+            "webstorm",
+            "pycharm",
+            "rubymine",
+            "goland",
+            "clion",
+            "phpstorm",
+            "rider",
+            "sublime",
+            "atom",
+            "zed"
+          ],
+          "examples": ["code", "vim", "idea", "nvim"]
+        },
+        "workspace": {
+          "type": "string",
+          "description": "Path to workspace file (relative to repository root)",
+          "pattern": "^[^/].*\\.(code-workspace|iml|sublime-workspace)$",
+          "examples": [
+            "project.code-workspace",
+            "backend.iml",
+            "app.sublime-workspace"
+          ]
+        }
+      },
+      "examples": [
+        {
+          "open": "code",
+          "workspace": "monorepo.code-workspace"
+        },
+        {
+          "open": "nvim"
+        }
+      ]
+    },
+    "git": {
+      "type": "object",
+      "description": "Git-specific configuration",
+      "additionalProperties": false,
+      "properties": {
+        "keepGitDir": {
+          "type": "boolean",
+          "description": "Preserve .git directory after cloning (default behavior removes it)",
+          "default": false,
+          "examples": [false, true]
+        },
+        "createBranch": {
+          "type": "string",
+          "description": "Create and switch to a new branch after cloning",
+          "pattern": "^[a-zA-Z0-9/_-]+$",
+          "minLength": 1,
+          "examples": ["feature/my-feature", "dev", "experimental"]
+        }
+      },
+      "examples": [
+        {
+          "keepGitDir": true,
+          "createBranch": "dev"
+        },
+        {
+          "keepGitDir": false
+        }
+      ]
+    }
+  },
+  "definitions": {
+    "hookConfig": {
+      "type": "object",
+      "required": ["commands"],
+      "additionalProperties": false,
+      "properties": {
+        "commands": {
+          "type": "array",
+          "description": "Shell commands to execute",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        },
+        "timeout": {
+          "type": "integer",
+          "description": "Maximum execution time in milliseconds (0 = no limit)",
+          "minimum": 0,
+          "default": 300000,
+          "examples": [30000, 60000, 120000]
+        },
+        "continueOnError": {
+          "type": "boolean",
+          "description": "Continue execution even if a command fails",
+          "default": false,
+          "examples": [false, true]
+        },
+        "workdir": {
+          "type": "string",
+          "description": "Working directory for hook commands",
+          "pattern": "^[^/].*[^/]$|^[^/]$"
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "version": "1.0",
+      "detection": {
+        "language": "javascript",
+        "tool": "bun"
+      },
+      "hooks": {
+        "post-clone": {
+          "commands": ["cp .env.example .env"],
+          "continueOnError": false
+        },
+        "post-setup": {
+          "commands": ["npm run db:migrate", "npm run seed"],
+          "timeout": 60000
+        }
+      },
+      "setup": {
+        "workdir": "backend"
+      },
+      "env": {
+        "required": ["DATABASE_URL"],
+        "defaults": {
+          "NODE_ENV": "development",
+          "PORT": "3000"
+        },
+        "prompts": {
+          "DATABASE_URL": {
+            "description": "PostgreSQL connection string",
+            "default": "postgresql://localhost:5432/mydb"
+          }
+        }
+      },
+      "workflows": {
+        "dev": {
+          "description": "Start development server",
+          "steps": ["npm run dev"]
+        },
+        "test": {
+          "description": "Run tests",
+          "steps": ["npm run lint", "npm test"]
+        }
+      },
+      "security": {
+        "requireConfirmation": true,
+        "allowSudo": false,
+        "restrictedCommands": ["rm -rf /", "dd"]
+      },
+      "editor": {
+        "open": "code",
+        "workspace": "project.code-workspace"
+      },
+      "git": {
+        "keepGitDir": true,
+        "createBranch": "dev"
+      }
+    },
+    {
+      "version": "1.0",
+      "detection": {
+        "language": "rust",
+        "tool": "cargo"
+      },
+      "hooks": {
+        "pre-setup": {
+          "commands": ["rustup update stable"],
+          "timeout": 120000
+        }
+      },
+      "workflows": {
+        "build": {
+          "description": "Build release binary",
+          "steps": ["cargo build --release"]
+        },
+        "test": {
+          "description": "Run test suite",
+          "steps": ["cargo test", "cargo clippy"]
+        }
+      }
+    },
+    {
+      "version": "1.0",
+      "detection": {
+        "skip": true
+      },
+      "setup": {
+        "commands": ["make setup", "./scripts/init.sh"]
+      },
+      "security": {
+        "requireConfirmation": true
+      }
+    }
+  ]
+}

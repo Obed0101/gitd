@@ -1,0 +1,90 @@
+{
+  "$schema": "../../gitdrc.schema.json",
+  "version": "1.0",
+  "detection": {
+    "language": "javascript",
+    "tool": "pnpm"
+  },
+  "hooks": {
+    "post-clone": {
+      "commands": [
+        "cp .env.example .env",
+        "cp packages/api/.env.example packages/api/.env",
+        "cp packages/web/.env.example packages/web/.env"
+      ],
+      "continueOnError": true
+    },
+    "post-setup": {
+      "commands": [
+        "pnpm run build:packages",
+        "pnpm run db:migrate"
+      ],
+      "timeout": 120000
+    }
+  },
+  "env": {
+    "required": [
+      "DATABASE_URL"
+    ],
+    "optional": [
+      "REDIS_URL",
+      "NEXT_PUBLIC_API_URL"
+    ],
+    "defaults": {
+      "NODE_ENV": "development",
+      "NEXT_PUBLIC_API_URL": "http://localhost:3001"
+    },
+    "prompts": {
+      "DATABASE_URL": {
+        "description": "PostgreSQL connection string for the monorepo",
+        "default": "postgresql://localhost:5432/monorepo_dev"
+      }
+    }
+  },
+  "workflows": {
+    "dev": {
+      "description": "Start all services in development mode",
+      "steps": [
+        "pnpm run dev"
+      ]
+    },
+    "dev-api": {
+      "description": "Start only the API server",
+      "steps": [
+        "pnpm --filter api dev"
+      ]
+    },
+    "dev-web": {
+      "description": "Start only the web app",
+      "steps": [
+        "pnpm --filter web dev"
+      ]
+    },
+    "test": {
+      "description": "Run all tests",
+      "steps": [
+        "pnpm run lint",
+        "pnpm run type-check",
+        "pnpm run test"
+      ]
+    },
+    "build": {
+      "description": "Build all packages",
+      "steps": [
+        "pnpm run build"
+      ]
+    }
+  },
+  "security": {
+    "requireConfirmation": true,
+    "allowSudo": false
+  },
+  "editor": {
+    "open": "code",
+    "workspace": "monorepo.code-workspace"
+  },
+  "git": {
+    "keepGitDir": true,
+    "createBranch": "dev"
+  }
+}

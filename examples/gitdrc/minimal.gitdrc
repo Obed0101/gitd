@@ -1,0 +1,10 @@
+{
+  "$schema": "../../gitdrc.schema.json",
+  "version": "1.0",
+  "setup": {
+    "skip": true
+  },
+  "security": {
+    "requireConfirmation": false
+  }
+}

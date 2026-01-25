@@ -1,156 +1,362 @@
-<br/>
 <p align="center">
   <a href="https://github.com/Obed0101/gitd">
-    <img src="https://i.imgur.com/NxZCmoU.png" alt="Logo">
+    <img src="https://i.imgur.com/NxZCmoU.png" alt="GITD Logo" width="200">
   </a>
 
-  <h3 align="center">🚀 gitd</h3>
+  <h1 align="center">GITD - Git Download Tool</h1>
 
   <p align="center">
-    Simplify Git repository downloads with ease!
+    Clone, configure, and set up repositories in seconds with intelligent project detection.
     <br/>
+    <br/>
+    <a href="#-quick-start">Quick Start</a>
+    ·
+    <a href="#-features">Features</a>
+    ·
+    <a href="#-configuration">Configuration</a>
+    ·
     <a href="https://github.com/Obed0101/gitd/issues">Report Bug</a>
-    .
-    <a href="https://github.com/Obed0101/gitd/issues">Request Feature</a>
   </p>
 </p>
 
 <div align="center">
 
-![Downloads](https://img.shields.io/github/downloads/Obed0101/gitd/total) ![Contributors](https://img.shields.io/github/contributors/Obed0101/gitd?color=dark-green) ![Forks](https://img.shields.io/github/forks/Obed0101/gitd?style=social) ![Stargazers](https://img.shields.io/github/stars/Obed0101/gitd?style=social) ![Issues](https://img.shields.io/github/issues/Obed0101/gitd) ![License](https://img.shields.io/github/license/Obed0101/gitd)
+![Version](https://img.shields.io/badge/version-2.0.0-blue)
+![Shell](https://img.shields.io/badge/shell-bash%20%7C%20zsh-green)
+![License](https://img.shields.io/github/license/Obed0101/gitd)
+![Stars](https://img.shields.io/github/stars/Obed0101/gitd?style=social)
 
 </div>
 
-## 📚 Table Of Contents
+---
 
-- [About the Project](#🚀-about-the-project)
-- [Features](#✨-features)
-- [Why gitd?](#🤔-why-gitd)
-- [Built With](#🛠️-built-with)
-- [Getting Started](#🚀-getting-started)
-  - [Prerequisites](#📋-prerequisites)
-  - [Installation](#🛠️-installation)
-- [Usage](#🛠️-usage)
-  - [Options](#⚙️-options)
-- [Customizing Repository Location](#🌐-customizing-repository-location)
-- [Examples](#🚀-examples)
-- [Roadmap](#🗺️-roadmap)
-- [Contributing](#🤝-contributing)
-  - [Creating A Pull Request](#🌐-creating-a-pull-request)
-- [License](#📄-license)
-- [Authors](#🌟-authors)
+## What is GITD?
 
-## 🚀 About The Project
+GITD is a CLI tool that streamlines the process of cloning and setting up Git repositories. Instead of manually running `git clone`, installing dependencies, and configuring your environment, GITD does it all in one command.
 
-This project provides a simple Zsh script (`gitd`) to streamline the process of downloading Git repositories. It offers a user-friendly command-line interface to quickly clone repositories with customizable settings.
+```bash
+# Traditional workflow
+git clone https://github.com/user/project.git
+cd project
+npm install  # or yarn, pnpm, cargo, pip...
+cp .env.example .env
+# ... more setup steps
 
-## ✨ Features
+# With GITD
+gitd -s https://github.com/user/project
+# Done! Dependencies installed, environment configured.
+```
 
-- 🔄 **Easy Cloning:** Quickly clone Git repositories with just a few commands.
-- 📁 **Customizable Base Directory:** Choose your preferred base directory for downloaded repositories.
-- 🎨 **Stylish Logs:** Colorful and informative logs for a better user experience.
-- ⚙️ **Configuration Options:** Customize the script behavior using environment variables.
-- ⚙️ **Setup Option:** Set up the downloaded repository, including installing dependencies.
+---
 
-## 🤔 Why gitd?
+## Quick Start
 
-- **Simplicity:** gitd is designed to be straightforward and easy to use.
-- **Style:** Enjoy stylish and colorful logs during the cloning process.
-- **Configurability:** Tailor gitd to your preferences with customizable options.
-
-## 🛠️ Built With
-
-- Zsh (Z shell)
-
-## 🚀 Getting Started
-
-To get started with `gitd`, follow the instructions below.
-
-### 📋 Prerequisites
-
-- Zsh or Bash installed on your system
-- GitHub CLI (`gh`) for retrieving repository details
-
-### 🛠️ Installation
-
-You can install `gitd` by running the following command in your terminal:
+### Installation
 
 ```bash
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/Obed0101/gitd/main/install.sh)"
 ```
 
-## 🛠️ Usage
+The installer will:
+- Detect your shell (Bash/Zsh)
+- Configure your preferred package managers
+- Set up the base directory for cloned repos
 
-Use the gitd script with the following syntax:
+### Basic Usage
 
-```sh
-gitd [options] <repo_url> [options]
+```bash
+# Clone a repository
+gitd https://github.com/user/repo
+
+# Clone and auto-setup (install dependencies)
+gitd -s https://github.com/user/repo
+
+# Clone a specific branch
+gitd -b develop https://github.com/user/repo
+
+# Clone, setup, and specify branch
+gitd -s -b main https://github.com/user/repo
 ```
 
-Replace <repo_url> with the URL of the Git repository you want to download. Optionally, you can specify a branch.
+---
 
-### ⚙️ Options:
+## Features
 
-| Option          | Description                                                          |
-| --------------- | -------------------------------------------------------------------- |
-| `-h, --help`    | Show help message.                                                   |
-| `-v, --version` | Display the script version.                                          |
-| `-s, --setup`   | Set up the downloaded repository, including installing dependencies. |
-| `-b, --branch`  | Specify the branch for cloning.                                      |
+### Intelligent Project Detection
 
-> **Note:** The setup option is currently compatible with the following package managers and systems:
+GITD automatically detects your project type and uses the appropriate package manager:
 
-- **npm:** Node.js package manager
-- **yarn:** Fast, reliable, and secure dependency management
-- **pnpm:** Fast, disk space efficient package manager
-- **bundle:** Ruby dependency manager
-- **mvn:** Apache Maven for Java projects
-- **go:** Go programming language
-- **gcc:** GNU Compiler Collection (for C/C++ projects)
+| Language | Detected Files | Package Managers |
+|----------|---------------|------------------|
+| JavaScript/TypeScript | `package.json`, lockfiles | bun, pnpm, yarn, npm |
+| Rust | `Cargo.toml` | cargo |
+| Go | `go.mod` | go |
+| Python | `pyproject.toml`, `requirements.txt` | uv, poetry, pipenv, pip |
+| Ruby | `Gemfile` | bundler |
+| Java | `pom.xml`, `build.gradle` | maven, gradle |
+| PHP | `composer.json` | composer |
+| Elixir | `mix.exs` | mix |
+| .NET | `*.csproj`, `*.fsproj` | dotnet |
+| Zig | `build.zig` | zig |
+| Swift | `Package.swift` | swift |
+| Haskell | `stack.yaml`, `*.cabal` | stack, cabal |
+| C/C++ | `CMakeLists.txt`, `Makefile` | cmake, make |
 
-## 🌐 Customizing Repository Location
+### Smart Lockfile Priority
 
-By default, gitd saves repositories in the $HOME/Repos directory. You can customize this location by setting the GITD_BASE_DIR environment variable. For example:
+GITD respects your lockfiles to ensure reproducible builds:
 
-```sh
-export GITD_BASE_DIR=~/my_repos
+```
+bun.lockb       → Uses Bun
+pnpm-lock.yaml  → Uses pnpm
+yarn.lock       → Uses Yarn
+package-lock.json → Uses npm
 ```
 
-Add this line to your shell configuration file (e.g., .zshrc or .bashrc) to make it persistent across sessions.
+### Interactive Setup
 
-## 🚀 Examples
+- Confirmation prompts before operations
+- Repository size display before cloning
+- Colored output for better readability
+- Loading spinners for long operations
 
-- Clone a repository with the default settings: `gitd https://github.com/Obed0101/gitd`
-- Specify a branch for cloning: `gitd -b main https://github.com/Obed0101/gitd`
-- Set up a repository after cloning: `gitd -s https://github.com/example/repo`
-- Customize the base directory: `export GITD_BASE_DIR=~/Downloads`
+### Automatic Tool Installation
 
-## 🗺️ Roadmap
+If a required tool isn't installed, GITD offers to install it:
 
-See the [open issues](https://github.com/Obed0101/gitd/issues) for a list of proposed features (and known issues).
+```
+⚠ Bun is not installed. Install it? [Y/n]
+```
 
-## 🤝 Contributing
+---
 
-Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+## Configuration
 
-- If you have suggestions for adding or removing projects, feel free to [open an issue](https://github.com/Obed0101/gitd/issues/new) to discuss it, or directly create a pull request after you edit the _README.md_ file with necessary changes.
-- Please make sure you check your spelling and grammar.
-- Create individual PR for each suggestion.
-- Please also read through the [Code Of Conduct](https://github.com/Obed0101/gitd/blob/main/CODE_OF_CONDUCT.md) before posting your first idea as well.
+### Global Configuration (`~/.gitd/config.json`)
 
-### 🌐 Creating A Pull Request
+GITD stores user preferences in `~/.gitd/config.json`:
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
+```json
+{
+  "version": "2.0.0",
+  "repos": {
+    "baseDir": "~/Repos",
+    "removeGitDir": true
+  },
+  "packageManagers": {
+    "javascript": "bun",
+    "python": "uv",
+    "rust": "cargo"
+  },
+  "setup": {
+    "autoInstallDeps": true,
+    "confirmBeforeInstall": true
+  }
+}
+```
+
+### Per-Repository Configuration (`.gitdrc`)
+
+Projects can include a `.gitdrc` file for custom setup:
+
+```json
+{
+  "version": "1.0",
+  "detection": {
+    "language": "javascript",
+    "tool": "pnpm"
+  },
+  "hooks": {
+    "post-clone": {
+      "commands": ["cp .env.example .env"]
+    },
+    "post-setup": {
+      "commands": ["npm run build", "npm test"]
+    }
+  },
+  "env": {
+    "required": ["DATABASE_URL"],
+    "defaults": {
+      "NODE_ENV": "development"
+    }
+  },
+  "workflows": {
+    "dev": {
+      "description": "Start development server",
+      "steps": ["pnpm dev"]
+    }
+  }
+}
+```
+
+See [.gitdrc Configuration Guide](docs/gitdrc-configuration.md) for full documentation.
+
+---
+
+## CLI Reference
+
+### Commands
+
+```bash
+gitd [options] <repository_url>
+```
+
+### Options
+
+| Option | Description |
+|--------|-------------|
+| `-h, --help` | Show help message |
+| `-v, --version` | Display version |
+| `-s, --setup` | Run setup after cloning (install dependencies) |
+| `-b, --branch <name>` | Clone a specific branch |
+
+### Examples
+
+```bash
+# Basic clone
+gitd https://github.com/facebook/react
+
+# Clone and setup a Next.js project
+gitd -s https://github.com/vercel/next.js
+
+# Clone a specific branch with setup
+gitd -s -b canary https://github.com/vercel/next.js
+
+# Clone a Rust project
+gitd -s https://github.com/rust-lang/rust
+```
+
+---
+
+## Advanced Usage
+
+### Customizing Repository Location
+
+By default, repositories are cloned to `~/Repos`. Change this in the installer or edit `~/.gitd/config.json`:
+
+```json
+{
+  "repos": {
+    "baseDir": "~/Projects"
+  }
+}
+```
+
+### Upgrading GITD
+
+```bash
+# Using the installer
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/Obed0101/gitd/main/install.sh)" -- --upgrade
+
+# Or if already installed
+cd ~/.gitd && git pull
+```
+
+### Uninstalling
+
+```bash
+bash ~/.gitd/uninstall.sh
+```
+
+---
+
+## Roadmap
+
+### v2.0 (Current)
+- [x] Multi-language project detection (22+ languages)
+- [x] Package manager preferences
+- [x] Interactive installer with rollback
+- [x] Bash and Zsh support
+- [x] Automatic tool installation
+
+### v2.1 (In Progress)
+- [ ] Per-repository configuration (`.gitdrc`)
+- [ ] Lifecycle hooks (post-clone, pre-setup, post-setup)
+- [ ] Environment variable prompts
+- [ ] Named workflows
+- [ ] Editor integration
+
+### v2.2 (Planned)
+- [ ] Fish shell support
+- [ ] Organize repos by owner (`~/Repos/owner/repo`)
+- [ ] GitHub Actions integration
+- [ ] VS Code extension
+- [ ] `gitd update` command
+
+### v3.0 (Future)
+- [ ] Plugin system
+- [ ] Template repositories
+- [ ] Team/organization configurations
+- [ ] CI/CD integration
+- [ ] Web dashboard
+
+---
+
+## Security
+
+GITD includes multiple security layers when executing repository configurations:
+
+1. **Command Blacklist**: Blocks dangerous commands (`rm -rf /`, fork bombs, etc.)
+2. **Sudo Protection**: Blocks sudo by default
+3. **User Confirmation**: Prompts before executing hooks
+4. **Timeout Protection**: Prevents infinite loops
+5. **Error Handling**: Fails safely on errors
+
+---
+
+## Contributing
+
+Contributions are welcome! Please read our contributing guidelines before submitting PRs.
+
+### Development Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/Obed0101/gitd.git
+cd gitd
+
+# Run tests
+./tests/gitd.bats
+
+# Test changes locally
+source src/bash/gitd.bash
+gitd -s https://github.com/your-test-repo
+```
+
+### Creating a Pull Request
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📄 License
+---
 
-Distributed under the Apache License. See [LICENSE](https://github.com/Obed0101/gitd/blob/main/LICENSE) for more information.
+## Requirements
 
-## 🌟 Authors
+- **Shell**: Bash 4.0+ or Zsh 5.0+
+- **Git**: For cloning repositories
+- **GitHub CLI** (`gh`): For repository metadata
+- **jq** (optional): For advanced JSON parsing
 
-- **Obed0101** - _Fullstack Developer_ - [Obed0101](https://github.com/Obed0101) - _Built gitd_
-- **AlphaTechnolog** - _Fullstack Developer_ - [AlphaTechnolog](https://github.com/AlphaTechnolog) - _Developer/Tester of gitd_
+---
+
+## License
+
+Distributed under the Apache License 2.0. See [LICENSE](LICENSE) for more information.
+
+---
+
+## Authors
+
+- **Obed0101** - [GitHub](https://github.com/Obed0101)
+- **AlphaTechnolog** - [GitHub](https://github.com/AlphaTechnolog)
+
+---
+
+<p align="center">
+  Made with determination in Mexico
+  <br/>
+  <a href="https://github.com/Obed0101/gitd">Star this repo</a> if you find it useful!
+</p>

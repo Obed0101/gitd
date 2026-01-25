@@ -1,0 +1,114 @@
+{
+  "$schema": "./gitdrc.schema.json",
+  "version": "1.0",
+  "detection": {
+    "language": "javascript",
+    "tool": "bun"
+  },
+  "hooks": {
+    "post-clone": {
+      "commands": [
+        "echo 'Repository cloned successfully!'",
+        "cp .env.example .env"
+      ],
+      "timeout": 10000,
+      "continueOnError": false
+    },
+    "pre-setup": {
+      "commands": [
+        "echo 'Preparing environment...'",
+        "mkdir -p tmp logs"
+      ],
+      "continueOnError": true
+    },
+    "post-setup": {
+      "commands": [
+        "echo 'Running post-setup tasks...'",
+        "npm run db:migrate",
+        "npm run seed"
+      ],
+      "timeout": 60000,
+      "continueOnError": false
+    }
+  },
+  "setup": {
+    "workdir": "backend"
+  },
+  "env": {
+    "required": [
+      "DATABASE_URL",
+      "API_KEY"
+    ],
+    "optional": [
+      "REDIS_URL",
+      "SENTRY_DSN"
+    ],
+    "defaults": {
+      "NODE_ENV": "development",
+      "PORT": "3000",
+      "LOG_LEVEL": "info"
+    },
+    "prompts": {
+      "DATABASE_URL": {
+        "description": "Enter PostgreSQL connection string",
+        "default": "postgresql://localhost:5432/mydb"
+      },
+      "API_KEY": {
+        "description": "Enter your API key",
+        "secret": true,
+        "validate": "^[a-zA-Z0-9]{32}$"
+      }
+    }
+  },
+  "workflows": {
+    "dev": {
+      "description": "Start development server with hot reload",
+      "steps": [
+        "npm run dev"
+      ]
+    },
+    "test": {
+      "description": "Run linting and tests",
+      "steps": [
+        "npm run lint",
+        "npm test",
+        "npm run test:e2e"
+      ]
+    },
+    "build": {
+      "description": "Build for production",
+      "steps": [
+        "npm run build",
+        "npm run type-check"
+      ]
+    },
+    "deploy": {
+      "description": "Deploy to production",
+      "steps": [
+        "npm run build",
+        "npm run db:migrate",
+        "pm2 restart app"
+      ],
+      "workdir": "backend"
+    }
+  },
+  "security": {
+    "requireConfirmation": true,
+    "allowSudo": false,
+    "restrictedCommands": [
+      "rm -rf /",
+      "sudo rm",
+      "dd if=",
+      "mkfs",
+      "format"
+    ]
+  },
+  "editor": {
+    "open": "code",
+    "workspace": "gitd.code-workspace"
+  },
+  "git": {
+    "keepGitDir": true,
+    "createBranch": "dev"
+  }
+}

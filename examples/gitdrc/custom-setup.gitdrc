@@ -1,0 +1,38 @@
+{
+  "$schema": "../../gitdrc.schema.json",
+  "version": "1.0",
+  "detection": {
+    "skip": true
+  },
+  "hooks": {
+    "post-clone": {
+      "commands": [
+        "echo 'Running custom bootstrap script...'",
+        "./scripts/bootstrap.sh"
+      ],
+      "timeout": 180000
+    }
+  },
+  "setup": {
+    "commands": [
+      "make setup",
+      "./scripts/install-deps.sh",
+      "make build"
+    ]
+  },
+  "workflows": {
+    "start": {
+      "description": "Start the application",
+      "steps": [
+        "./scripts/start.sh"
+      ]
+    }
+  },
+  "security": {
+    "requireConfirmation": true,
+    "allowSudo": true,
+    "restrictedCommands": [
+      "rm -rf /"
+    ]
+  }
+}

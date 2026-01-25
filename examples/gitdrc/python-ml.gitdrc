@@ -1,0 +1,80 @@
+{
+  "$schema": "../../gitdrc.schema.json",
+  "version": "1.0",
+  "detection": {
+    "language": "python",
+    "tool": "uv"
+  },
+  "hooks": {
+    "post-clone": {
+      "commands": [
+        "cp .env.example .env",
+        "mkdir -p data/raw data/processed models"
+      ],
+      "continueOnError": false
+    },
+    "post-setup": {
+      "commands": [
+        "uv run pre-commit install",
+        "uv run jupyter contrib nbextension install --user"
+      ],
+      "timeout": 60000
+    }
+  },
+  "env": {
+    "required": [
+      "DATASET_PATH"
+    ],
+    "optional": [
+      "WANDB_API_KEY",
+      "CUDA_VISIBLE_DEVICES"
+    ],
+    "defaults": {
+      "PYTHONPATH": "src",
+      "CUDA_VISIBLE_DEVICES": "0"
+    },
+    "prompts": {
+      "DATASET_PATH": {
+        "description": "Path to training dataset",
+        "default": "./data/raw"
+      },
+      "WANDB_API_KEY": {
+        "description": "Weights & Biases API key (optional)",
+        "secret": true
+      }
+    }
+  },
+  "workflows": {
+    "train": {
+      "description": "Train the model",
+      "steps": [
+        "uv run python src/train.py"
+      ]
+    },
+    "notebook": {
+      "description": "Launch Jupyter notebook",
+      "steps": [
+        "uv run jupyter notebook"
+      ]
+    },
+    "test": {
+      "description": "Run tests with pytest",
+      "steps": [
+        "uv run pytest tests/",
+        "uv run ruff check .",
+        "uv run mypy src/"
+      ]
+    }
+  },
+  "security": {
+    "requireConfirmation": true,
+    "allowSudo": false,
+    "restrictedCommands": [
+      "rm -rf data/",
+      "rm -rf models/"
+    ]
+  },
+  "editor": {
+    "open": "code"
+  }
+}

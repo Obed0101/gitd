@@ -1,0 +1,70 @@
+{
+  "$schema": "../../gitdrc.schema.json",
+  "version": "1.0",
+  "detection": {
+    "language": "rust",
+    "tool": "cargo"
+  },
+  "hooks": {
+    "pre-setup": {
+      "commands": [
+        "rustup update stable",
+        "rustup component add clippy rustfmt"
+      ],
+      "timeout": 120000,
+      "continueOnError": false
+    },
+    "post-setup": {
+      "commands": [
+        "cargo build --release",
+        "cargo test --no-run"
+      ],
+      "timeout": 300000
+    }
+  },
+  "env": {
+    "optional": [
+      "RUST_LOG",
+      "RUST_BACKTRACE"
+    ],
+    "defaults": {
+      "RUST_LOG": "info",
+      "RUST_BACKTRACE": "1"
+    }
+  },
+  "workflows": {
+    "dev": {
+      "description": "Run in development mode with cargo watch",
+      "steps": [
+        "cargo watch -x run"
+      ]
+    },
+    "test": {
+      "description": "Run tests with coverage",
+      "steps": [
+        "cargo test",
+        "cargo clippy -- -D warnings",
+        "cargo fmt --check"
+      ]
+    },
+    "build": {
+      "description": "Build optimized release binary",
+      "steps": [
+        "cargo build --release"
+      ]
+    },
+    "bench": {
+      "description": "Run benchmarks",
+      "steps": [
+        "cargo bench"
+      ]
+    }
+  },
+  "security": {
+    "requireConfirmation": true,
+    "allowSudo": false
+  },
+  "editor": {
+    "open": "code"
+  }
+}
