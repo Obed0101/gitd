@@ -53,6 +53,14 @@
 - [x] Add sudo protection
 - [x] Add restricted commands support
 
+### Sprint 3: Environment & Workflows (DONE)
+- [x] Create `env-vars.sh` module
+- [x] Implement env prompts with validation
+- [x] Create `workflows.sh` module
+- [x] Add workflow CLI command (`gitd workflow`)
+- [x] Implement editor integration (Sprint 1-2)
+- [x] Implement git configuration (Sprint 1-2)
+
 ---
 
 ## In Progress

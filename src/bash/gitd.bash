@@ -11,13 +11,48 @@ source "$GITD_INSTALL/src/lib/config-merge.sh" 2>/dev/null || true
 source "$GITD_INSTALL/src/lib/config-validator.sh" 2>/dev/null || true
 source "$GITD_INSTALL/src/lib/security.sh" 2>/dev/null || true
 source "$GITD_INSTALL/src/lib/hooks.sh" 2>/dev/null || true
+source "$GITD_INSTALL/src/lib/env-vars.sh" 2>/dev/null || true
+source "$GITD_INSTALL/src/lib/workflows.sh" 2>/dev/null || true
 
 session_pwd=$(pwd)
 
+# =============================================================================
+# WORKFLOW SUBCOMMAND
+# =============================================================================
+
+gitd-workflow() {
+    local action="$1"
+    shift
+
+    # Load repo config from current directory
+    if type load_repo_config &>/dev/null 2>&1; then
+        load_repo_config "." >/dev/null 2>&1
+    fi
+
+    if ! type handle_workflow_command &>/dev/null 2>&1; then
+        echo -e "${COLOR_RED}${CROSS_MARK} Workflows module not available${COLOR_RESET}"
+        return 1
+    fi
+
+    handle_workflow_command "$action" "." "$@"
+}
+
+# =============================================================================
+# MAIN COMMAND
+# =============================================================================
+
 gitd() {
+    # Handle subcommands
+    if [[ "$1" == "workflow" ]]; then
+        shift
+        gitd-workflow "$@"
+        return $?
+    fi
+
     if [ -z "$1" ]; then
         echo -e "${COLOR_RED}${CROSS_MARK} Error: ${COLOR_RESET}(use -h or --help for help)"
         echo "Usage: gitd <repo_url> [options]"
+        echo "       gitd workflow <name>"
         return 1
     fi
 
@@ -47,6 +82,7 @@ gitd() {
             ;;
         (-h|--help)
             echo "Usage: gitd <repo_url> [options]"
+            echo "       gitd workflow <name>"
             echo ""
             echo "Options:"
             echo "  -h, --help     Show this help message"
@@ -54,6 +90,12 @@ gitd() {
             echo "  -s, --setup    Set up the repository after cloning"
             echo "  -b, --branch   Specify the branch for cloning"
             echo "  --dry-run      Show what would be executed without running"
+            echo ""
+            echo "Subcommands:"
+            echo "  workflow       Run a workflow from .gitdrc"
+            echo "    gitd workflow --list       List available workflows"
+            echo "    gitd workflow <name>       Execute a workflow"
+            echo "    gitd workflow --info <n>   Show workflow details"
             echo ""
             echo "Per-repository configuration:"
             echo "  Place a .gitdrc file in your repository to customize setup."
@@ -243,6 +285,17 @@ gitd() {
         fi
 
         if [[ "$skip_setup" == "false" ]]; then
+            # Process environment variables (prompts + defaults)
+            if [[ "$has_repo_config" == "true" ]] && type has_env_config &>/dev/null 2>&1; then
+                if has_env_config; then
+                    if ! process_env_vars; then
+                        echo -e "${COLOR_RED}${CROSS_MARK} Setup aborted${COLOR_RESET}"
+                        cd "$session_pwd"
+                        return 1
+                    fi
+                fi
+            fi
+
             # Execute pre-setup hooks
             if [[ "$has_repo_config" == "true" ]] && type execute_pre_setup_hooks &>/dev/null 2>&1; then
                 execute_pre_setup_hooks "$target_dir"
