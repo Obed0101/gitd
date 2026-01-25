@@ -1,79 +1,197 @@
-#!/bin/sh
+#!/bin/bash
 
-  if [ -t 1 ]; then
-INFO_MARK="\e[1;34mi\e[0m"
-CHECK_MARK="\e[1;32m✔\e[0m"
-CROSS_MARK="\e[1;31m✖\e[0m"
-WARNING_MARK="\e[1;33m!\e[0m"
-QUESTION_MARK="\e[1;35m?\e[0m"
-DOWNLOAD_MARK="\e[1;36m⬇\e[0m"
+if [ -t 1 ]; then
+    INFO_MARK=$'\033[1;34mi\033[0m'
+    CHECK_MARK=$'\033[1;32m✔\033[0m'
+    CROSS_MARK=$'\033[1;31m✖\033[0m'
+    WARNING_MARK=$'\033[1;33m!\033[0m'
+    QUESTION_MARK=$'\033[1;35m?\033[0m'
+    DOWNLOAD_MARK=$'\033[1;36m⬇\033[0m'
 
-COLOR_RED='\e[1;31m'
-COLOR_GREEN='\e[1;32m'
-COLOR_YELLOW='\e[1;33m'
-COLOR_BLUE='\e[1;34m'
-COLOR_CYAN='\e[1;36m'
-COLOR_RESET='\e[0m'
-  else
-   INFO_MARK="i"
-CHECK_MARK="✔"
-CROSS_MARK="✖"
-WARNING_MARK="!"
-QUESTION_MARK="?"
-DOWNLOAD_MARK="⬇"
+    COLOR_RED=$'\033[1;31m'
+    COLOR_GREEN=$'\033[1;32m'
+    COLOR_YELLOW=$'\033[1;33m'
+    COLOR_BLUE=$'\033[1;34m'
+    COLOR_CYAN=$'\033[1;36m'
+    COLOR_RESET=$'\033[0m'
+else
+    INFO_MARK="i"
+    CHECK_MARK="✔"
+    CROSS_MARK="✖"
+    WARNING_MARK="!"
+    QUESTION_MARK="?"
+    DOWNLOAD_MARK="⬇"
 
-COLOR_RED=''
-COLOR_GREEN=''
-COLOR_YELLOW=''
-COLOR_BLUE=''
-COLOR_CYAN=''
-COLOR_RESET=''
-  fi
+    COLOR_RED=''
+    COLOR_GREEN=''
+    COLOR_YELLOW=''
+    COLOR_BLUE=''
+    COLOR_CYAN=''
+    COLOR_RESET=''
+fi
+
+# Get base directory from config.json
+# Usage: base_dir=$(get_base_dir)
+get_base_dir() {
+    local config_file="$HOME/.gitd/config.json"
+    if [ -f "$config_file" ]; then
+        local base_dir
+        base_dir=$(grep -o '"baseDir"[[:space:]]*:[[:space:]]*"[^"]*"' "$config_file" 2>/dev/null | head -1 | cut -d'"' -f4)
+        if [ -n "$base_dir" ]; then
+            # Expand ~ to $HOME
+            echo "${base_dir/#\~/$HOME}"
+            return 0
+        fi
+    fi
+    echo "$HOME/Repos"
+}
 
 SHELL_NAME=$(basename "$SHELL")
 
+# Execute a known command safely without eval
+# Usage: run_command <command_type> [args...]
+# Returns: exit status of the command
+run_command() {
+    local cmd_type="$1"
+    shift
+
+    case "$cmd_type" in
+        # JavaScript/TypeScript
+        "bun")
+            bun install 2>&1
+            ;;
+        "npm")
+            npm install 2>&1
+            ;;
+        "yarn")
+            yarn install 2>&1
+            ;;
+        "pnpm")
+            pnpm install 2>&1
+            ;;
+
+        # Rust
+        "cargo")
+            cargo build --release 2>&1
+            ;;
+
+        # Go
+        "go")
+            go build ./... 2>&1
+            ;;
+
+        # Python
+        "uv")
+            if [ -f "pyproject.toml" ]; then
+                uv sync 2>&1
+            else
+                uv pip install -r requirements.txt 2>&1
+            fi
+            ;;
+        "pip")
+            if [ -f "pyproject.toml" ]; then
+                pip install -e . 2>&1
+            else
+                pip install -r requirements.txt 2>&1
+            fi
+            ;;
+        "poetry")
+            poetry install 2>&1
+            ;;
+        "pipenv")
+            pipenv install 2>&1
+            ;;
+
+        # Ruby
+        "bundle")
+            bundle install 2>&1
+            ;;
+
+        # Java
+        "mvn")
+            mvn clean install -DskipTests 2>&1
+            ;;
+        "gradle")
+            gradle build -x test 2>&1
+            ;;
+
+        # PHP
+        "composer")
+            composer install 2>&1
+            ;;
+
+        # Elixir
+        "mix")
+            mix deps.get && mix compile 2>&1
+            ;;
+
+        # .NET
+        "dotnet")
+            dotnet restore && dotnet build 2>&1
+            ;;
+
+        # Zig
+        "zig")
+            zig build 2>&1
+            ;;
+
+        # Swift
+        "swift")
+            swift build 2>&1
+            ;;
+
+        # Haskell
+        "stack")
+            stack build 2>&1
+            ;;
+        "cabal")
+            cabal update && cabal build 2>&1
+            ;;
+
+        # C/C++
+        "make")
+            make 2>&1
+            ;;
+        "cmake")
+            cmake -B build && cmake --build build 2>&1
+            ;;
+
+        # Git operations
+        "git-clone")
+            # Args: branch, url, target_dir
+            local branch="$1"
+            local url="$2"
+            local target_dir="$3"
+            git clone --depth 1 -b "$branch" "$url" "$target_dir" 2>&1
+            ;;
+
+        *)
+            echo "Unknown command type: $cmd_type"
+            return 1
+            ;;
+    esac
+}
+
+# Show loading message while executing a command
+# Usage: show_loading <loading_msg> <success_msg> <command_type> [args...]
 function show_loading() {
-case "$SHELL_NAME" in
-  "bash")
-      loading_message="$1"
-      completion_message="$2"
-      command_to_execute="$3"
-
-      echo -en "\r${DOWNLOAD_MARK} ${loading_message}"
-
-      command_output=$(eval "$command_to_execute" 2>&1)
-      command_exit_status=$?
-
-      if [ $command_exit_status -eq 0 ]; then
-        echo -e "\r${completion_message}\n"
-      else
-        echo -e "\r${COLOR_RED}${CROSS_MARK} Error executing the command.${COLOR_RESET}\n"
-      fi
-    ;;
-  "zsh")
-    loading_message="$1"
-    completion_message="$2"
-    command_to_execute="$3"
-    
+    local loading_message="$1"
+    local completion_message="$2"
+    local command_type="$3"
+    shift 3
 
     echo -en "\r${DOWNLOAD_MARK} ${loading_message}"
 
-     command_output=$(eval "$command_to_execute" 2>&1)
-     command_exit_status=$?
+    command_output=$(run_command "$command_type" "$@")
+    command_exit_status=$?
 
-     if [ $command_exit_status -eq 0 ]; then
+    if [ $command_exit_status -eq 0 ]; then
         echo -e "\r${completion_message}\n"
-      else
-        echo -e "\r${COLOR_RED}${CROSS_MARK} Error executing the command.${COLOR_RESET}"
-      fi
-    ;;
-  *)
-     echo ""
-     echo -e "${COLOR_RED}${CROSS_MARK} Unknown shell.${COLOR_RESET}"
+    else
+        echo -e "\r${COLOR_RED}${CROSS_MARK} Error executing the command.${COLOR_RESET}\n"
+    fi
 
-    ;;
-esac
-
+    return $command_exit_status
 }
 
 format_size() {

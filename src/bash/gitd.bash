@@ -54,7 +54,7 @@ gitd() {
 
     local repo_name=$(basename "$repo_url" .git)
     local repo_owner=$(echo "$repo_url" | cut -d '/' -f 4)
-    local base_dir=${GITD_BASE_DIR:-"$HOME/Repos"}
+    local base_dir=$(get_base_dir)
 
     if ! gh repo view "$repo_owner/$repo_name" &>/dev/null; then
         echo -e "\033[0;31m✖ Error: \033[0mThe repository '$repo_owner/$repo_name' does not exist or you don't have access."
@@ -108,7 +108,7 @@ gitd() {
     fi
 
     echo ""
-    show_loading "Cloning repository..." "${COLOR_GREEN}${CHECK_MARK} Repository downloaded successfully.${COLOR_RESET}" "git clone --depth 1 -b "$branch" "$repo_url" "$target_dir""
+    show_loading "Cloning repository..." "${COLOR_GREEN}${CHECK_MARK} Repository downloaded successfully.${COLOR_RESET}" "git-clone" "$branch" "$repo_url" "$target_dir"
 
     if [ $? -eq 0 ]; then
         rm -rf "$target_dir/.git"

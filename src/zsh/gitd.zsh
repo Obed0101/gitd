@@ -54,7 +54,7 @@ done
 
     local repo_name=$(basename "$repo_url" .git)
     local repo_owner=$(echo "$repo_url" | cut -d '/' -f 4)
-    local base_dir=${GITD_BASE_DIR:-"$HOME/Repos"}
+    local base_dir=$(get_base_dir)
     local target_dir="$base_dir/$repo_name"
 
     if ! gh repo view "$repo_owner/$repo_name" &>/dev/null; then
@@ -70,7 +70,7 @@ done
         echo ""
         echo -e "${COLOR_CYAN}${INFO_MARK} Repository size: ${COLOR_RESET}$(format_size $repo_size)"
         echo ""
-        read -r "response?$(echo -e '\e[1;34m::\e[0m') Do you want to delete it and re-download the repository? [Y/n]: "
+        read -r "response?$(echo -e '\033[1;34m::\033[0m') Do you want to delete it and re-download the repository? [Y/n]: "
         response=${response:-Y}
 
         if [[ ! $response =~ ^[Yy]$ ]]; then
@@ -86,7 +86,7 @@ done
         echo ""
         echo -e "${COLOR_CYAN}${INFO_MARK} Repository size: ${COLOR_RESET}$(format_size $repo_size)"
         echo ""
-        read -r "response?$(echo -e '\e[1;34m::\e[0m') Proceed with installation? [Y/n]: "
+        read -r "response?$(echo -e '\033[1;34m::\033[0m') Proceed with installation? [Y/n]: "
         response=${response:-Y}
 
         if [[ ! $response =~ ^[Yy]$ ]]; then
@@ -104,7 +104,7 @@ done
     fi
 
     echo ""
-    show_loading "Cloning repository..." "${COLOR_GREEN}${CHECK_MARK} Repository downloaded successfully.${COLOR_RESET}" "git clone --depth 1 -b "$branch" "$repo_url" "$target_dir""
+    show_loading "Cloning repository..." "${COLOR_GREEN}${CHECK_MARK} Repository downloaded successfully.${COLOR_RESET}" "git-clone" "$branch" "$repo_url" "$target_dir"
 
     if [ $? -eq 0 ]; then
         rm -rf "$target_dir/.git"
@@ -121,7 +121,7 @@ done
         if [ "$setup" = true ]; then
             bash "$GITD_INSTALL/src/scripts/setup.sh"
         fi
-        cd $session_pwd
+        cd "$session_pwd"
     else
         echo ""
         echo -e "${COLOR_RED}${CROSS_MARK} Error: ${COLOR_RESET}Failed to clone the repository."
