@@ -35,27 +35,27 @@
 
 ---
 
-## In Progress
+## Completed
 
-### Sprint 1: Core Infrastructure
-- [ ] Create `config-repo.sh` module
-- [ ] Create `config-validator.sh` module
-- [ ] Create `config-merge.sh` module
-- [ ] Integrate into `gitd.bash`
-- [ ] Integrate into `gitd.zsh`
-- [ ] Implement detection override
+### Sprint 1: Core Infrastructure (DONE)
+- [x] Create `config-repo.sh` module
+- [x] Create `config-validator.sh` module
+- [x] Create `config-merge.sh` module
+- [x] Integrate into `gitd.bash`
+- [x] Integrate into `gitd.zsh`
+- [x] Implement detection override
+
+### Sprint 2: Hooks & Security (DONE)
+- [x] Create `security.sh` module
+- [x] Create `hooks.sh` module
+- [x] Implement user confirmation flow
+- [x] Integrate hooks into main flow
+- [x] Add sudo protection
+- [x] Add restricted commands support
 
 ---
 
-## Pending
-
-### Sprint 2: Hooks & Security
-- [ ] Create `security.sh` module
-- [ ] Create `hooks.sh` module
-- [ ] Implement user confirmation flow
-- [ ] Integrate hooks into main flow
-- [ ] Add sudo protection
-- [ ] Add restricted commands support
+## In Progress
 
 ### Sprint 3: Environment & Workflows
 - [ ] Create `env-vars.sh` module
