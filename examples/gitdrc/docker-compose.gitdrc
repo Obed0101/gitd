@@ -1,0 +1,96 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Obed0101/gitd/main/gitdrc.schema.json",
+  "version": "1.0",
+
+  "detection": {
+    "skip": true
+  },
+
+  "setup": {
+    "skip": true
+  },
+
+  "hooks": {
+    "post-clone": {
+      "commands": [
+        "cp .env.example .env",
+        "docker compose pull"
+      ],
+      "timeout": 300000,
+      "continueOnError": true
+    }
+  },
+
+  "env": {
+    "required": [
+      "POSTGRES_PASSWORD",
+      "REDIS_PASSWORD"
+    ],
+    "optional": [
+      "DOMAIN"
+    ],
+    "defaults": {
+      "POSTGRES_USER": "app",
+      "POSTGRES_DB": "appdb",
+      "REDIS_HOST": "redis"
+    },
+    "prompts": {
+      "POSTGRES_PASSWORD": {
+        "description": "PostgreSQL password",
+        "secret": true
+      },
+      "REDIS_PASSWORD": {
+        "description": "Redis password",
+        "secret": true
+      },
+      "DOMAIN": {
+        "description": "Domain for the application",
+        "default": "localhost"
+      }
+    }
+  },
+
+  "workflows": {
+    "up": {
+      "description": "Start all services",
+      "steps": [
+        "docker compose up -d"
+      ]
+    },
+    "down": {
+      "description": "Stop all services",
+      "steps": [
+        "docker compose down"
+      ]
+    },
+    "logs": {
+      "description": "View logs",
+      "steps": [
+        "docker compose logs -f"
+      ]
+    },
+    "build": {
+      "description": "Build images",
+      "steps": [
+        "docker compose build"
+      ]
+    },
+    "restart": {
+      "description": "Restart all services",
+      "steps": [
+        "docker compose restart"
+      ]
+    },
+    "clean": {
+      "description": "Remove all containers and volumes",
+      "steps": [
+        "docker compose down -v --remove-orphans"
+      ]
+    }
+  },
+
+  "security": {
+    "requireConfirmation": true,
+    "allowSudo": false
+  }
+}

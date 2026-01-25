@@ -1,6 +1,6 @@
 # Progress: Per-Repository Configuration
 
-## Status: Specification Complete
+## Status: Implementation Complete
 
 **Last Updated**: 2026-01-25
 
@@ -61,24 +61,12 @@
 - [x] Implement editor integration (Sprint 1-2)
 - [x] Implement git configuration (Sprint 1-2)
 
----
-
-## In Progress
-
-### Sprint 3: Environment & Workflows
-- [ ] Create `env-vars.sh` module
-- [ ] Implement env prompts with validation
-- [ ] Create `workflows.sh` module
-- [ ] Add workflow CLI command
-- [ ] Implement editor integration
-- [ ] Implement git configuration
-
-### Sprint 4: Polish & Documentation
-- [ ] Write comprehensive tests
-- [ ] Create more example files
-- [ ] Add --dry-run flag
-- [ ] Add verbose logging
-- [ ] Performance optimization
+### Sprint 4: Polish & Documentation (DONE)
+- [x] Write comprehensive tests (`tests/*.bats`)
+- [x] Create more example files (nextjs-prisma, go-api, docker-compose)
+- [x] Add --dry-run flag (implemented in Sprint 1)
+- [x] Add verbose/debug logging (`logging.sh`)
+- [x] Add --verbose and --debug CLI flags
 
 ---
 

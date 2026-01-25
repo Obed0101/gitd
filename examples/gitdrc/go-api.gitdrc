@@ -1,0 +1,94 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Obed0101/gitd/main/gitdrc.schema.json",
+  "version": "1.0",
+
+  "detection": {
+    "language": "go",
+    "tool": "go"
+  },
+
+  "hooks": {
+    "post-clone": {
+      "commands": [
+        "cp .env.example .env",
+        "go mod download"
+      ],
+      "timeout": 60000
+    },
+    "post-setup": {
+      "commands": [
+        "go generate ./...",
+        "go vet ./..."
+      ],
+      "continueOnError": true
+    }
+  },
+
+  "env": {
+    "required": [
+      "PORT",
+      "DATABASE_URL"
+    ],
+    "optional": [
+      "LOG_LEVEL",
+      "JWT_SECRET"
+    ],
+    "defaults": {
+      "PORT": "8080",
+      "LOG_LEVEL": "info",
+      "GIN_MODE": "debug"
+    },
+    "prompts": {
+      "DATABASE_URL": {
+        "description": "Database connection string",
+        "default": "postgres://localhost:5432/api?sslmode=disable"
+      },
+      "JWT_SECRET": {
+        "description": "JWT signing secret",
+        "secret": true
+      }
+    }
+  },
+
+  "workflows": {
+    "dev": {
+      "description": "Run with hot reload (requires air)",
+      "steps": [
+        "air"
+      ]
+    },
+    "run": {
+      "description": "Run the server",
+      "steps": [
+        "go run cmd/server/main.go"
+      ]
+    },
+    "build": {
+      "description": "Build binary",
+      "steps": [
+        "go build -o bin/server cmd/server/main.go"
+      ]
+    },
+    "test": {
+      "description": "Run tests with coverage",
+      "steps": [
+        "go test -v -cover ./..."
+      ]
+    },
+    "lint": {
+      "description": "Run golangci-lint",
+      "steps": [
+        "golangci-lint run"
+      ]
+    }
+  },
+
+  "git": {
+    "keepGitDir": true,
+    "createBranch": "feature/setup"
+  },
+
+  "editor": {
+    "open": "code"
+  }
+}

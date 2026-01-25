@@ -1,0 +1,93 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Obed0101/gitd/main/gitdrc.schema.json",
+  "version": "1.0",
+
+  "detection": {
+    "language": "javascript",
+    "tool": "pnpm"
+  },
+
+  "hooks": {
+    "post-clone": {
+      "commands": [
+        "cp .env.example .env.local",
+        "echo 'Environment file created'"
+      ],
+      "continueOnError": true
+    },
+    "post-setup": {
+      "commands": [
+        "pnpm prisma generate",
+        "pnpm prisma db push"
+      ],
+      "timeout": 120000
+    }
+  },
+
+  "env": {
+    "required": [
+      "DATABASE_URL"
+    ],
+    "optional": [
+      "NEXTAUTH_SECRET",
+      "NEXTAUTH_URL"
+    ],
+    "defaults": {
+      "NODE_ENV": "development",
+      "NEXTAUTH_URL": "http://localhost:3000"
+    },
+    "prompts": {
+      "DATABASE_URL": {
+        "description": "PostgreSQL connection string",
+        "default": "postgresql://user:password@localhost:5432/mydb",
+        "validate": "^postgres(ql)?://"
+      },
+      "NEXTAUTH_SECRET": {
+        "description": "NextAuth.js secret (generate with: openssl rand -base64 32)",
+        "secret": true
+      }
+    }
+  },
+
+  "workflows": {
+    "dev": {
+      "description": "Start development server",
+      "steps": [
+        "pnpm dev"
+      ]
+    },
+    "db-studio": {
+      "description": "Open Prisma Studio",
+      "steps": [
+        "pnpm prisma studio"
+      ]
+    },
+    "db-migrate": {
+      "description": "Run database migrations",
+      "steps": [
+        "pnpm prisma migrate dev"
+      ]
+    },
+    "build": {
+      "description": "Production build",
+      "steps": [
+        "pnpm build"
+      ]
+    },
+    "test": {
+      "description": "Run tests",
+      "steps": [
+        "pnpm test"
+      ]
+    }
+  },
+
+  "editor": {
+    "open": "code"
+  },
+
+  "security": {
+    "requireConfirmation": true,
+    "allowSudo": false
+  }
+}

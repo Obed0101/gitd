@@ -13,8 +13,13 @@ source "$GITD_INSTALL/src/lib/security.sh" 2>/dev/null || true
 source "$GITD_INSTALL/src/lib/hooks.sh" 2>/dev/null || true
 source "$GITD_INSTALL/src/lib/env-vars.sh" 2>/dev/null || true
 source "$GITD_INSTALL/src/lib/workflows.sh" 2>/dev/null || true
+source "$GITD_INSTALL/src/lib/logging.sh" 2>/dev/null || true
 
 session_pwd=$(pwd)
+
+# Check for environment variable verbose/debug
+[[ "$GITD_VERBOSE" == "true" ]] && type enable_verbose &>/dev/null && enable_verbose
+[[ "$GITD_DEBUG" == "true" ]] && type enable_debug &>/dev/null && enable_debug
 
 # =============================================================================
 # WORKFLOW SUBCOMMAND
@@ -76,6 +81,14 @@ gitd() {
             dry_run=true
             shift
             ;;
+        (--verbose)
+            type enable_verbose &>/dev/null && enable_verbose
+            shift
+            ;;
+        (--debug)
+            type enable_debug &>/dev/null && enable_debug
+            shift
+            ;;
         (-v|--version)
             echo "gitd version 2.0.0"
             return 0
@@ -90,6 +103,8 @@ gitd() {
             echo "  -s, --setup    Set up the repository after cloning"
             echo "  -b, --branch   Specify the branch for cloning"
             echo "  --dry-run      Show what would be executed without running"
+            echo "  --verbose      Enable verbose output"
+            echo "  --debug        Enable debug output (includes verbose)"
             echo ""
             echo "Subcommands:"
             echo "  workflow       Run a workflow from .gitdrc"
@@ -118,6 +133,11 @@ gitd() {
     local repo_name=$(basename "$repo_url" .git)
     local repo_owner=$(echo "$repo_url" | cut -d '/' -f 4)
     local base_dir=$(get_base_dir)
+
+    # Log parsed values
+    type log_verbose &>/dev/null && log_verbose "Repository: $repo_owner/$repo_name"
+    type log_verbose &>/dev/null && log_verbose "Base directory: $base_dir"
+    type log_debug &>/dev/null && log_debug "URL: $repo_url"
 
     # Verify repository exists
     if ! gh repo view "$repo_owner/$repo_name" &>/dev/null; then
@@ -189,6 +209,7 @@ gitd() {
         repo_config_path=$(load_repo_config "$target_dir")
         if [[ -n "$repo_config_path" ]]; then
             has_repo_config=true
+            type log_verbose &>/dev/null && log_verbose "Found .gitdrc config at: $repo_config_path"
 
             # Validate config
             if type validate_repo_config &>/dev/null 2>&1; then
