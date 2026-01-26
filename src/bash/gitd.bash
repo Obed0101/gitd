@@ -65,12 +65,23 @@ gitd() {
     local branch
     local setup=false
     local dry_run=false
+    local target_dir_override=""
 
     # Parse arguments
     while [[ $# -gt 0 ]]; do
         case "$1" in
         (-b|--branch)
             branch=$2
+            shift 2
+            ;;
+        (-d|--dir)
+            if [[ "$2" == "." ]]; then
+                target_dir_override="$(pwd)/"
+            elif [[ "$2" == /* ]]; then
+                target_dir_override="$2"
+            else
+                target_dir_override="$(pwd)/$2"
+            fi
             shift 2
             ;;
         (-s|--setup)
@@ -102,6 +113,7 @@ gitd() {
             echo "  -v, --version  Display the script version"
             echo "  -s, --setup    Set up the repository after cloning"
             echo "  -b, --branch   Specify the branch for cloning"
+            echo "  -d, --dir      Clone to specific directory (use '.' for current)"
             echo "  --dry-run      Show what would be executed without running"
             echo "  --verbose      Enable verbose output"
             echo "  --debug        Enable debug output (includes verbose)"
@@ -134,9 +146,23 @@ gitd() {
     local repo_owner=$(echo "$repo_url" | cut -d '/' -f 4)
     local base_dir=$(get_base_dir)
 
+    # Determine target directory
+    local target_dir
+    if [[ -n "$target_dir_override" ]]; then
+        # Use override directory (from -d/--dir flag)
+        if [[ "$target_dir_override" == */ ]]; then
+            target_dir="${target_dir_override}${repo_name}"
+        else
+            target_dir="$target_dir_override"
+        fi
+        type log_verbose &>/dev/null && log_verbose "Using custom directory: $target_dir"
+    else
+        target_dir="$base_dir/$repo_name"
+    fi
+
     # Log parsed values
     type log_verbose &>/dev/null && log_verbose "Repository: $repo_owner/$repo_name"
-    type log_verbose &>/dev/null && log_verbose "Base directory: $base_dir"
+    type log_verbose &>/dev/null && log_verbose "Target directory: $target_dir"
     type log_debug &>/dev/null && log_debug "URL: $repo_url"
 
     # Verify repository exists
@@ -144,8 +170,6 @@ gitd() {
         echo -e "${COLOR_RED}${CROSS_MARK} Error: ${COLOR_RESET}The repository '$repo_owner/$repo_name' does not exist or you don't have access."
         return 1
     fi
-
-    local target_dir="$base_dir/$repo_name"
     local repo_size=$(gh api repos/"$repo_owner"/"$repo_name" --jq '.size')
 
     # Handle existing directory
