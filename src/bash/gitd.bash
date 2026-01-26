@@ -270,17 +270,29 @@ gitd() {
     # =========================================================================
     # HANDLE .git DIRECTORY
     # =========================================================================
-    local keep_git_dir=false
-    if [[ "$has_repo_config" == "true" ]] && type should_keep_git_dir &>/dev/null 2>&1; then
-        if should_keep_git_dir; then
-            keep_git_dir=true
+    local remove_git_dir=true
+
+    # Check global config first (repos.removeGitDir)
+    local global_config="$HOME/.gitd/config.json"
+    if [[ -f "$global_config" ]]; then
+        local global_remove
+        global_remove=$(grep -o '"removeGitDir"[[:space:]]*:[[:space:]]*[^,}]*' "$global_config" 2>/dev/null | head -1 | grep -o 'true\|false')
+        if [[ "$global_remove" == "false" ]]; then
+            remove_git_dir=false
         fi
     fi
 
-    if [[ "$keep_git_dir" == "false" ]]; then
+    # Check repo config (git.keepGitDir) - overrides global
+    if [[ "$has_repo_config" == "true" ]] && type should_keep_git_dir &>/dev/null 2>&1; then
+        if should_keep_git_dir; then
+            remove_git_dir=false
+        fi
+    fi
+
+    if [[ "$remove_git_dir" == "true" ]]; then
         rm -rf "$target_dir/.git"
     else
-        echo -e "${COLOR_CYAN}${INFO_MARK} Keeping .git directory (configured in .gitdrc)${COLOR_RESET}"
+        echo -e "${COLOR_CYAN}${INFO_MARK} Keeping .git directory${COLOR_RESET}"
     fi
 
     # Display repository details
@@ -306,7 +318,7 @@ gitd() {
     if [[ "$has_repo_config" == "true" ]] && type get_create_branch &>/dev/null 2>&1; then
         local create_branch
         create_branch=$(get_create_branch)
-        if [[ -n "$create_branch" ]] && [[ "$keep_git_dir" == "true" ]]; then
+        if [[ -n "$create_branch" ]] && [[ "$remove_git_dir" == "false" ]]; then
             echo -e "${COLOR_CYAN}${INFO_MARK} Creating branch: $create_branch${COLOR_RESET}"
             cd "$target_dir"
             git checkout -b "$create_branch" 2>/dev/null || true
@@ -356,7 +368,8 @@ gitd() {
         fi
     fi
 
-    cd "$session_pwd"
+    # Change to cloned directory
+    cd "$target_dir"
 
     # =========================================================================
     # OPEN EDITOR (if configured)
